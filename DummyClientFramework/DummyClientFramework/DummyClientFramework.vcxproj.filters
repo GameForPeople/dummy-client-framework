@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fixed_WinAPI">
+      <UniqueIdentifier>{e7cebde0-dfcb-4b22-a691-b3863ea30c7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed_Framework">
+      <UniqueIdentifier>{4ce0afd6-361c-4813-a2ca-9c612eff29eb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Fixed_WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Fixed_WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Fixed_WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h" />
+    <ClInclude Include="DummyClientFramework.h">
+      <Filter>Fixed_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>Fixed_Framework</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Fixed_WinAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="DummyClientFramework.cpp">
+      <Filter>Fixed_Framework</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="DummyClientFramework.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="DummyClientFramework.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
