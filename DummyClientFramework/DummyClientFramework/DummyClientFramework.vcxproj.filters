@@ -5,38 +5,65 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Fixed_WinAPI">
-      <UniqueIdentifier>{e7cebde0-dfcb-4b22-a691-b3863ea30c7a}</UniqueIdentifier>
+    <Filter Include="NetworkManager">
+      <UniqueIdentifier>{0e055a07-7270-4700-8ad9-facc3acd5ef6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fixed_Framework">
+    <Filter Include="Fixed">
+      <UniqueIdentifier>{0c493255-5c81-44e5-a75a-a7628c95d6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework">
       <UniqueIdentifier>{4ce0afd6-361c-4813-a2ca-9c612eff29eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_WinAPI">
+      <UniqueIdentifier>{e7cebde0-dfcb-4b22-a691-b3863ea30c7a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
-      <Filter>Fixed_WinAPI</Filter>
+      <Filter>Fixed\Fixed_WinAPI</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Fixed_WinAPI</Filter>
+      <Filter>Fixed\Fixed_WinAPI</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Fixed_WinAPI</Filter>
+      <Filter>Fixed\Fixed_WinAPI</Filter>
     </ClInclude>
     <ClInclude Include="main.h" />
+    <ClInclude Include="NetworkManager.h">
+      <Filter>NetworkManager</Filter>
+    </ClInclude>
     <ClInclude Include="DummyClientFramework.h">
-      <Filter>Fixed_Framework</Filter>
+      <Filter>Fixed\Fixed_Framework</Filter>
     </ClInclude>
     <ClInclude Include="Define.h">
-      <Filter>Fixed_Framework</Filter>
+      <Filter>Fixed\Fixed_Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomDefine.hh">
+      <Filter>NetworkManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SendMemoryPool.h">
+      <Filter>Fixed\Fixed_Framework</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Fixed_WinAPI</Filter>
+      <Filter>Fixed\Fixed_WinAPI</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>NetworkManager</Filter>
+    </ClCompile>
     <ClCompile Include="DummyClientFramework.cpp">
-      <Filter>Fixed_Framework</Filter>
+      <Filter>Fixed\Fixed_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Define.cpp">
+      <Filter>Fixed\Fixed_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomDefine.cpp">
+      <Filter>NetworkManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SendMemoryPool.cpp">
+      <Filter>Fixed\Fixed_Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

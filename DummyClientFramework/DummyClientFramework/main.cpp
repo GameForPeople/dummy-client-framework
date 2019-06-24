@@ -7,6 +7,7 @@
 #include "DummyClientFramework.h"
 
 #include "Define.h"
+#include "CustomDefine.hh"
 
 #define MAX_LOADSTRING 100
 

@@ -1,9 +1,11 @@
 #pragma once
 
+class NetworkManager;
+
 class DummyClientFramework
 {
 public:
-	DummyClientFramework();
+	DummyClientFramework(/*NetworkManager**/);
 	~DummyClientFramework();
 
 	void Create(HWND hWnd);
@@ -13,4 +15,5 @@ public:
 
 private:
 	HWND hWnd;
+	std::unique_ptr<NetworkManager> networkManager;
 };

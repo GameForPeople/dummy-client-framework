@@ -1,14 +1,6 @@
 #pragma once
 
-namespace WINDOW
-{
-	constexpr static int WINDOW_WIDTH = 800;
-	constexpr static int WINDOW_HEIGHT = 600;
-
-	constexpr static int MAIN_TIMER_INDEX = 1;
-	constexpr static int MAIN_TIMER_FRAME = 17; //60FPS
-}
-
+// FIXED
 namespace KEY
 {
 	enum {
@@ -49,4 +41,13 @@ namespace KEY
 		VK_Y,
 		VK_Z
 	};
+}
+
+// FIXED
+namespace ERROR_UTIL
+{
+	_NORETURN void ERROR_QUIT(const WCHAR *msg);
+	void ERROR_DISPLAY(const WCHAR *msg);
+	void HandleRecvError();
+	void HandleSendError();
 }
