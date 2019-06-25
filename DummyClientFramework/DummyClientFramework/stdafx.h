@@ -28,6 +28,8 @@
 #pragma comment(lib, "wininet.lib")
 #include <WinSock2.h>
 
+#include <atlimage.h>
+
 #include <mutex>
 #include <shared_mutex>
 #include <atomic>

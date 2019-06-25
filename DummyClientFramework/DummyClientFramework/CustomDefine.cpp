@@ -76,19 +76,22 @@ void NETWORK_EXAMPLE::ProcessPacket(_ClientType * pClient)
 		{
 			LoginTrue* packet = reinterpret_cast<LoginTrue*>(pClient->loadedBuf);
 			
-			// 해당 조건은 아마 항상 True
-			if(packet->key == pClient->key) pClient->isLogin = true;
+			//PUT_OBJECT에서 검사 후 설정하도록 변경.
+			//if(packet->key == pClient->key) pClient->isLogin = true;
 		}
 		break;
 	case PUT_OBJECT:
 		{
 			PutObject* packet = reinterpret_cast<PutObject*>(pClient->loadedBuf);
+
+			// 자신 말고, 다른 플레이어에 대한 PutObject는 무시.
 			if (packet->key == pClient->key)
 			{
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
+
+				if(pClient->isLogin == false) pClient->isLogin = true;
 			}
-			// 자신 말고, 다른 플레이어에 대한 PutObject는 무시.
 		}
 		break;
 	case POSITION:

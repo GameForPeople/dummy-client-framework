@@ -19,6 +19,18 @@ namespace FRAMEWORK
 	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당합니다.
 }
 
+namespace GAME
+{
+	constexpr static int ZONE_MIN_X = 0;	// 테스트 하는 서버의 X 최저값 좌표입니다.
+	constexpr static int ZONE_MIN_Y = 0;	// 테스트 하는 서버의 Y 최저값 좌표입니다.
+
+	constexpr static int ZONE_MAX_X = 8000;	// 테스트 하는 서버의 X 최대값 좌표입니다.
+	constexpr static int ZONE_MAX_Y = 8000;	// 테스트 하는 서버의 Y 최대값 좌표입니다.
+
+	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
+	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
+}
+
 namespace NETWORK
 {
 	const static std::string SERVER_IP = "127.0.0.1";
@@ -71,10 +83,10 @@ namespace MEMORY
 	struct ClientInfo : public BaseClientInfo	// 사용 목적에 따라 해당 구조체를 수정해주세요.
 	{
 		ClientInfo(const _ClientIndexType key);
-		virtual ~ClientInfo() final;
+		virtual ~ClientInfo() override final;
 
 	public:
-		bool isLogin = false;
+		std::atomic<bool> isLogin = false;
 
 		_PosType posX;
 		_PosType posY;
@@ -84,7 +96,7 @@ namespace MEMORY
 	struct SendMemoryUnit : public BaseMemoryUnit
 	{
 		SendMemoryUnit();
-		virtual ~SendMemoryUnit() final;
+		virtual ~SendMemoryUnit() override final;
 
 	public:
 		char dataBuf[NETWORK::MAX_SEND_SIZE];

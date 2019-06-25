@@ -21,13 +21,15 @@ void DummyClientFramework::Create(HWND hWnd)
 
 void DummyClientFramework::Draw(HDC hdc)
 {
-	networkManager->clientArrLock.lock_shared();	// +++++++++++++++++++ 1
+	//networkManager->clientArrLock.lock_shared();	// +++++++++++++++++++ 1
 	for (auto& client : networkManager->clientArr)
 	{
 		if (client->isLogin)
-			;
+		{
+			
+		}
 	}
-	networkManager->clientArrLock.unlock_shared(); // -------------------- 0
+	//networkManager->clientArrLock.unlock_shared(); // -------------------- 0
 }
 
 void DummyClientFramework::Update()

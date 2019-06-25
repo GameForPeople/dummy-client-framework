@@ -44,6 +44,9 @@
     <ClInclude Include="SendMemoryPool.h">
       <Filter>Fixed\Fixed_Framework</Filter>
     </ClInclude>
+    <ClInclude Include="RenderModelManager.h">
+      <Filter>Fixed\Fixed_Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,6 +66,9 @@
       <Filter>NetworkManager</Filter>
     </ClCompile>
     <ClCompile Include="SendMemoryPool.cpp">
+      <Filter>Fixed\Fixed_Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderModelManager.cpp">
       <Filter>Fixed\Fixed_Framework</Filter>
     </ClCompile>
   </ItemGroup>
