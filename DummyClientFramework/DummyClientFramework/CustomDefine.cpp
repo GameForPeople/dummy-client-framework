@@ -67,7 +67,7 @@ SendMemoryUnit::~SendMemoryUnit()
 //--------------------------------------
 // EXAMPLE
 //--------------------------------------
-void NETWORK_EXAMPLE::ProcessPacket(_ClientType * pClient)
+void NetworkManager::ProcessPacket_EXAMPLE(_ClientType * pClient)
 {
 	using namespace PACKET_EXAMPLE::TYPE::SERVER_TO_CLIENT;
 	using namespace PACKET_EXAMPLE::DATA::SERVER_TO_CLIENT;
@@ -93,6 +93,7 @@ void NETWORK_EXAMPLE::ProcessPacket(_ClientType * pClient)
 				pClient->posY = packet->posY;
 
 				if(pClient->isLogin == false) pClient->isLogin = true;
+				++connectedClientCount;
 			}
 		}
 		break;
@@ -113,7 +114,7 @@ void NETWORK_EXAMPLE::ProcessPacket(_ClientType * pClient)
 }
 
 // 해당 함수는 NetworkManager에 종속되었습니다.
-void NetworkManager::ProcessUpdate()
+void NetworkManager::ProcessUpdate_EXAMPLE()
 {
 	// 클라이언트가 일정 틱마다, 서버로 Connect를 시도하는 행위는
 	// NetworkManager::ConnectWithinMaxClient에 이미 정의되어 있으며,
@@ -121,10 +122,13 @@ void NetworkManager::ProcessUpdate()
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
 
 	// 랜덤 4방향 하나 보내줍니다.
-	for (int i = 0; i < connectedClientCount; ++i) /*== for(auto client : cont) if(isLogin)과 같다라고 예상합니다. */
+	for(auto pClient : clientArr)
 	{
-		PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
-		SendPacket(clientArr[i], reinterpret_cast<char*>(&packet));
+		if (pClient->isLogin)
+		{
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
+			SendPacket(pClient, reinterpret_cast<char*>(&packet));
+		}
 	}
 }
 

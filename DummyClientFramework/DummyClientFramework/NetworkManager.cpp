@@ -129,7 +129,7 @@ void NetworkManager::LoadRecvData(_ClientType* pClient, int recvSize)
 			memcpy(pClient->loadedBuf + pClient->loadedSize, pBuf, required);
 
 			//-------------------------------------------------------------------------------
-			NETWORK_EXAMPLE::ProcessPacket(pClient); // 패킷처리 가가가가아아아아즈즈즈즞즈아아아아앗!!!!!!
+			NetworkManager::ProcessPacket_EXAMPLE(pClient); // 패킷처리 가가가가아아아아즈즈즈즞즈아아아아앗!!!!!!
 			//-------------------------------------------------------------------------------
 
 			pClient->loadedSize = 0;

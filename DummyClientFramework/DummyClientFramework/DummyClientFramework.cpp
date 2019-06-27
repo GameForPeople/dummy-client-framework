@@ -34,12 +34,15 @@ void DummyClientFramework::Draw(HDC hdc)
 		}
 	}
 	//networkManager->clientArrLock.unlock_shared(); // -------------------- 0
+	
+	auto tempStr = (L"Dummy Count : " + std::to_wstring(networkManager->GetConnectedClientCount()));
+	TextOutW(hdc, 50, 50, tempStr.c_str(), wcslen(tempStr.c_str())); // tempStr.length() or tempStr.size()
 }
 
 void DummyClientFramework::Update()
 {
 	networkManager->ConnectWithinMaxClient();
-	networkManager->ProcessUpdate();
+	networkManager->ProcessUpdate_EXAMPLE();
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
