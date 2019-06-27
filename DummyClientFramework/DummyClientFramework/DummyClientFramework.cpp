@@ -5,7 +5,8 @@
 #include "Define.h"
 
 DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/)
-	: networkManager()
+	: hWnd()
+	, networkManager()
 {
 }
 
@@ -22,11 +23,14 @@ void DummyClientFramework::Create(HWND hWnd)
 void DummyClientFramework::Draw(HDC hdc)
 {
 	//networkManager->clientArrLock.lock_shared();	// +++++++++++++++++++ 1
-	for (auto& client : networkManager->clientArr)
+	for (auto& pClient : networkManager->clientArr)
 	{
-		if (client->isLogin)
+		if (pClient->isLogin)
 		{
-			
+			const _PosType tempX = static_cast<_PosType>((static_cast<float>(pClient->posX - GAME::ZONE_MIN_X) / GAME::ZONE_X_SIZE) * WINDOW::WINDOW_WIDTH);
+			const _PosType tempY = static_cast<_PosType>((static_cast<float>(pClient->posY - GAME::ZONE_MIN_Y) / GAME::ZONE_Y_SIZE) * WINDOW::WINDOW_HEIGHT);
+
+			Rectangle(hdc, tempX, tempY, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
 		}
 	}
 	//networkManager->clientArrLock.unlock_shared(); // -------------------- 0
@@ -34,6 +38,8 @@ void DummyClientFramework::Draw(HDC hdc)
 
 void DummyClientFramework::Update()
 {
+	networkManager->ConnectWithinMaxClient();
+	networkManager->ProcessUpdate();
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)

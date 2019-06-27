@@ -23,6 +23,8 @@ private:
 
 	void LoadRecvData(_ClientType* pClient, int restSize);
 
+	void ProcessUpdate();
+	void SendPacket(const _ClientType* const pClient, const char* const packetData);
 private:
 	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT> clientArr;
 	std::shared_mutex clientArrLock;

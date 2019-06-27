@@ -191,3 +191,15 @@ void NetworkManager::ConnectWithinMaxClient()
 	}
 
 }
+
+void NetworkManager::SendPacket(const _ClientType* const pClient, const char* const packetData)
+{
+	auto sendMemoryUnit = sendMemoryPool->PopMemory();
+	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
+	sendMemoryUnit->wsaBuf.len = packetData[0];
+
+	DWORD flag{};
+	ZeroMemory(&sendMemoryUnit->overlapped, sizeof(sendMemoryUnit->overlapped));
+
+	WSASend(pClient->socket, &sendMemoryUnit->wsaBuf, 1, NULL, 0, &sendMemoryUnit->overlapped, NULL);
+}

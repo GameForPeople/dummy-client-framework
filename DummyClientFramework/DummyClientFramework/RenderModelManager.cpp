@@ -3,6 +3,7 @@
 #include "CustomDefine.hh"
 #include "RenderModelManager.h"
 
+/*
 //-----------------------------------------------------
 // BitModel
 //-----------------------------------------------------
@@ -36,3 +37,4 @@ void BitModel::Render(HDC pHDC, _PosType posX, _PosType posY)
 		tempY
 	);
 }
+*/

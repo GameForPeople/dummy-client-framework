@@ -1,5 +1,6 @@
 #pragma once
 
+/*
 __interface InterfaceBaseModel
 {
 public:
@@ -26,3 +27,21 @@ public:
 public:
 	virtual void Render(HDC pHDC, _PosType posX, _PosType posY) override final;
 };
+
+enum class RENDER_MODEL_TYPE
+{
+	BACKGROUND
+};
+
+class RenderModelManager
+{
+	std::vector<BaseModel*> renderModelCont;
+
+public:
+	RenderModelManager();
+	~RenderModelManager();
+
+public:
+	BaseModel* GetRenderModel(RENDER_MODEL_TYPE);
+};
+*/
