@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include <string>
-#include "CustomDefine.hh"
+#include "Custom.hh"
 #include "NetworkManager.h"
 #include "SendMemoryPool.h"
 
@@ -58,6 +58,7 @@ SendMemoryUnit::SendMemoryUnit()
 	: BaseMemoryUnit(false)
 	, dataBuf()
 {
+	wsaBuf.buf = dataBuf;
 }
 
 SendMemoryUnit::~SendMemoryUnit()

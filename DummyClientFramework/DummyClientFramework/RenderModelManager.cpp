@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "CustomDefine.hh"
+#include "Custom.hh"
 #include "RenderModelManager.h"
 
 /*

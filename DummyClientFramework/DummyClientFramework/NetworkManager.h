@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CustomDefine.hh"
+#include "Custom.hh"
 
 class DummyClientFramework;
 class SendMemoryPool;

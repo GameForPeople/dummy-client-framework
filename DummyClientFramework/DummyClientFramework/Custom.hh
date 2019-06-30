@@ -53,6 +53,7 @@ namespace USING
 
 namespace MEMORY 
 {
+#pragma region [FIXED]
 	struct BaseMemoryUnit // FIXED : 해당 구조체를 수정할 시, 비정상적으로 동작할 수 있습니다.
 	{
 		BaseMemoryUnit(const bool isRecv);
@@ -63,6 +64,15 @@ namespace MEMORY
 		WSABUF wsaBuf;
 
 		const bool isRecv;	// true == recv, false == send
+	};
+
+	struct SendMemoryUnit : public BaseMemoryUnit
+	{
+		SendMemoryUnit();
+		virtual ~SendMemoryUnit() override final;
+
+	public:
+		char dataBuf[NETWORK::MAX_SEND_SIZE];
 	};
 
 	struct BaseClientInfo : public BaseMemoryUnit	// FIXED : 해당 구조체를 수정할 시, 비정상적으로 동작할 수 있습니다.
@@ -81,6 +91,7 @@ namespace MEMORY
 		char loadedBuf[NETWORK::MAX_RECV_SIZE];
 		unsigned short loadedSize;
 	};
+#pragma endregion
 
 	struct ClientInfo : public BaseClientInfo	// 사용 목적에 따라 해당 구조체를 수정해주세요.
 	{
@@ -95,14 +106,6 @@ namespace MEMORY
 	};
 	using _ClientType = ClientInfo;	// 새로운 이름의 클라이언트 구조체 사용을 희망 시, 해당 "ClientInfo" 부분을 수정해주세요.
 
-	struct SendMemoryUnit : public BaseMemoryUnit
-	{
-		SendMemoryUnit();
-		virtual ~SendMemoryUnit() override final;
-
-	public:
-		char dataBuf[NETWORK::MAX_SEND_SIZE];
-	};
 }using namespace MEMORY;
 
 namespace PACKET_EXAMPLE
@@ -180,7 +183,3 @@ namespace PACKET_EXAMPLE
 	}
 }
 
-namespace NETWORK_EXAMPLE
-{
-	void ProcessPacket(_ClientType * pClient);
-}
