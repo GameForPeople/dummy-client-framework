@@ -25,8 +25,9 @@ private:
 
 	void SendPacket(const _ClientType* const pClient, const char* const packetData);
 
-	void ProcessPacket_EXAMPLE(_ClientType * pClient);
-	void ProcessUpdate_EXAMPLE();
+	void ProcessConnect_CUSTOM(_ClientType * pClient);
+	void ProcessPacket_CUSTOM(_ClientType * pClient);
+	void ProcessUpdate_CUSTOM();
 
 private:
 	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT> clientArr;

@@ -5,6 +5,10 @@
 #include "NetworkManager.h"
 #include "SendMemoryPool.h"
 
+#pragma region [FIXED]
+//--------------------------------------
+// Base Memory Unit
+//--------------------------------------
 BaseMemoryUnit::BaseMemoryUnit(const bool isRecv)
 	: isRecv(isRecv)
 	, overlapped()
@@ -15,6 +19,20 @@ BaseMemoryUnit::BaseMemoryUnit(const bool isRecv)
 }
 
 BaseMemoryUnit::~BaseMemoryUnit()
+{
+}
+
+//--------------------------------------
+// Send Memory Unit
+//--------------------------------------
+SendMemoryUnit::SendMemoryUnit()
+	: BaseMemoryUnit(false)
+	, dataBuf()
+{
+	wsaBuf.buf = dataBuf;
+}
+
+SendMemoryUnit::~SendMemoryUnit()
 {
 }
 
@@ -36,6 +54,8 @@ BaseClientInfo::~BaseClientInfo()
 {
 }
 
+#pragma endregion
+
 //--------------------------------------
 // Client Info
 //--------------------------------------
@@ -51,24 +71,19 @@ ClientInfo::~ClientInfo()
 {
 }
 
-//--------------------------------------
-// Send Memory Unit
-//--------------------------------------
-SendMemoryUnit::SendMemoryUnit()
-	: BaseMemoryUnit(false)
-	, dataBuf()
-{
-	wsaBuf.buf = dataBuf;
-}
-
-SendMemoryUnit::~SendMemoryUnit()
-{
-}
 
 //--------------------------------------
 // EXAMPLE
 //--------------------------------------
-void NetworkManager::ProcessPacket_EXAMPLE(_ClientType * pClient)
+
+void NetworkManager::ProcessConnect_CUSTOM(_ClientType * pClient)
+{
+	/*
+		해당 예제에서는 어떤 것도 하지 않습니다.
+	*/
+}
+
+void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 {
 	using namespace PACKET_EXAMPLE::TYPE::SERVER_TO_CLIENT;
 	using namespace PACKET_EXAMPLE::DATA::SERVER_TO_CLIENT;
@@ -114,8 +129,7 @@ void NetworkManager::ProcessPacket_EXAMPLE(_ClientType * pClient)
 	}
 }
 
-// 해당 함수는 NetworkManager에 종속되었습니다.
-void NetworkManager::ProcessUpdate_EXAMPLE()
+void NetworkManager::ProcessUpdate_CUSTOM()
 {
 	// 클라이언트가 일정 틱마다, 서버로 Connect를 시도하는 행위는
 	// NetworkManager::ConnectWithinMaxClient에 이미 정의되어 있으며,

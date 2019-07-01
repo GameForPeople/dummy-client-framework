@@ -54,7 +54,7 @@ namespace USING
 namespace MEMORY 
 {
 #pragma region [FIXED]
-	struct BaseMemoryUnit // FIXED : 해당 구조체를 수정할 시, 비정상적으로 동작할 수 있습니다.
+	struct BaseMemoryUnit
 	{
 		BaseMemoryUnit(const bool isRecv);
 		virtual ~BaseMemoryUnit();
@@ -75,7 +75,7 @@ namespace MEMORY
 		char dataBuf[NETWORK::MAX_SEND_SIZE];
 	};
 
-	struct BaseClientInfo : public BaseMemoryUnit	// FIXED : 해당 구조체를 수정할 시, 비정상적으로 동작할 수 있습니다.
+	struct BaseClientInfo : public BaseMemoryUnit
 	{
 		BaseClientInfo(const _ClientIndexType key);
 		virtual ~BaseClientInfo() override;

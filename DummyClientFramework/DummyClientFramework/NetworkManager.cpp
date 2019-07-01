@@ -187,6 +187,9 @@ void NetworkManager::ConnectWithinMaxClient()
 
 			// 7. 접속한 클라이언트 수를 하나 증가시켜줌.
 			connectedClientCount.fetch_add(1);
+
+			// 8. Connect에 대한 커스텀 함수 제공.
+			ProcessConnect_CUSTOM(clientArr[nowClientIndex]);
 		}
 	}
 
