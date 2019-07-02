@@ -42,7 +42,7 @@ void DummyClientFramework::Draw(HDC hdc)
 void DummyClientFramework::Update()
 {
 	networkManager->ConnectWithinMaxClient();
-	networkManager->ProcessUpdate_EXAMPLE();
+	networkManager->ProcessUpdate_CUSTOM();
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)

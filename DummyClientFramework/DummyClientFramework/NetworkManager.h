@@ -25,18 +25,19 @@ private:
 
 	void SendPacket(const _ClientType* const pClient, const char* const packetData);
 
+private:
 	void ProcessConnect_CUSTOM(_ClientType * pClient);
 	void ProcessPacket_CUSTOM(_ClientType * pClient);
 	void ProcessUpdate_CUSTOM();
 
 private:
-	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT> clientArr;
+	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>	clientArr;
 	std::shared_mutex clientArrLock;
 	std::atomic<_ClientIndexType> connectedClientCount;
 
 	std::array<std::thread, FRAMEWORK::WORKER_THREAD_COUNT> workerThreadArr;
 
-	std::unique_ptr<SendMemoryPool> sendMemoryPool;
+	std::unique_ptr<SendMemoryPool>	sendMemoryPool;
 
 	HANDLE hIOCP;
 

@@ -39,6 +39,8 @@
 
 #include <string>
 
+#include <cassert>
+
 #define		_NORETURN			[[noreturn]]
 #define		_NODISCARD			[[nodiscard]]
 #define		_DEPRECATED			[[deprecated]]

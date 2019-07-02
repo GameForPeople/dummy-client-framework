@@ -26,9 +26,6 @@
     <Filter Include="Fixed\Fixed_Framework\Managers">
       <UniqueIdentifier>{4dc4503b-1a6c-4724-89d1-222d38e119f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fixed\Fixed_Others">
-      <UniqueIdentifier>{38cb84de-3066-4368-8ae4-d7149230b4ff}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkManager.h">

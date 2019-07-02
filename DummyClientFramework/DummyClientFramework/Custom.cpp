@@ -1,9 +1,8 @@
 #include "stdafx.h"
 
-#include <string>
 #include "Custom.hh"
+#include "DummyClientFramework.h"
 #include "NetworkManager.h"
-#include "SendMemoryPool.h"
 
 #pragma region [FIXED]
 //--------------------------------------
@@ -71,6 +70,33 @@ ClientInfo::~ClientInfo()
 {
 }
 
+//--------------------------------------
+// Test Integrity
+//--------------------------------------
+
+void DummyClientFramework::TestIntegrity()
+{
+	// 프로그래밍 오류 제한
+	{
+		MEMORY::BaseMemoryUnit tempMemoryUnit(0);
+		assert((unsigned long)(&tempMemoryUnit) == (unsigned long)(&(tempMemoryUnit.overlapped)), L"BaseMemoryUnit 구조체의 필드에서, MemoryUnit(Overlap)이 최상단에 생성되지 않아 비정상적인 결과를 도출할 수 있습니다. 서버 실행을 거절하였습니다. ");
+	}
+
+	// PACKET_SIZE, 
+	{
+		static_assert(NETWORK::MAX_PACKET_SIZE < 128, L"NETWORK::MAX_PACKET_SIZE가 128 이상일 경우, 해당 프레임워크를 수정해야합니다. NetworkManager::LoadRecvData()를 수정하시고, 이 정적 단언문을 제거하세요. ");
+		static_assert(NETWORK::MAX_SEND_SIZE < 128, L"NETWORK::MAX_SEND_SIZE가 128 이상일 경우, 해당 프레임워크를 수정해야합니다. NetworkManager::SendPacket()를 수정하시고, 이 정적 단언문을 제거하세요. ");
+		
+		{
+			// 당연쓰~
+			static_assert(NETWORK::MAX_RECV_SIZE > 0, L"NETWORK::MAX_RECV_SIZE가 0일리가 없습니다.");
+			static_assert(NETWORK::MAX_PACKET_SIZE > 0, L"NETWORK::MAX_PACKET_SIZE가 0일리가 없습니다.");
+			static_assert(NETWORK::MAX_SEND_SIZE > 0, L"NETWORK::MAX_SEND_SIZE가 0일리가 없습니다.");
+		}
+	}
+
+	//
+}
 
 //--------------------------------------
 // EXAMPLE

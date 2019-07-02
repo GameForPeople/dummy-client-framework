@@ -29,7 +29,7 @@ namespace GAME
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
-	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ + 1;
+	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +1;
 	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +1;
 }
 
@@ -37,8 +37,9 @@ namespace NETWORK
 {
 	const static std::string SERVER_IP = "127.0.0.1";
 	constexpr static unsigned short SERVER_PORT = 9000;
-	constexpr static int MAX_RECV_SIZE = 1024;	// 한번에 RECV가 가능한 최대 크기입니다. RECV하는 프로토콜 - 패킷 중, 1024보다 큰 패킷이 존재할 경우, 수정해주세요.
-	constexpr static int MAX_SEND_SIZE = 1024;	// 한번에 SEND가 가능한 최대 크기입니다. Send하는 프로토콜 - 패킷 중, 1024보다 큰 패킷이 존재할 경우, 수정해주세요.
+	constexpr static int MAX_RECV_SIZE = 1000;	// 한번에 RECV가 가능한 최대 크기입니다.
+	constexpr static int MAX_SEND_SIZE = 127;	// 한번에 SEND가 가능한 최대 크기입니다. Send하는 프로토콜 - 패킷 중, sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
+	constexpr static int MAX_PACKET_SIZE = 127;	// Packet의 최대 크기입니다.  sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
 }
 
 namespace USING
@@ -86,10 +87,10 @@ namespace MEMORY
 		SOCKET socket;
 		bool isConnect = false;
 
-		char dataBuf[NETWORK::MAX_SEND_SIZE];
+		char dataBuf[NETWORK::MAX_RECV_SIZE];
 
-		char loadedBuf[NETWORK::MAX_RECV_SIZE];
-		unsigned short loadedSize;
+		char loadedBuf[NETWORK::MAX_PACKET_SIZE];
+		_PacketSizeType loadedSize;
 	};
 #pragma endregion
 
