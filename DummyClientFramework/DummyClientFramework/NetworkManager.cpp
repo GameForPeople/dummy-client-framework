@@ -11,6 +11,7 @@ NetworkManager::NetworkManager()
 	, workerThreadArr()
 	, hIOCP()
 	, sendMemoryPool()
+	//, isErrorOccurred(false)
 {
 	_ClientIndexType tempIndex = 0;
 	for (auto& pClient : clientArr)
@@ -149,7 +150,7 @@ void NetworkManager::LoadRecvData(_ClientType* pClient, int recvSize)
 	}
 }
 
-void NetworkManager::ConnectWithinMaxClient()
+bool NetworkManager::ConnectWithinMaxClient()
 {
 	//// 0. 최대 클라이언트 체크.
 	//if (connectedClientCount == FRAMEWORK::MAX_CLIENT) return;
@@ -158,12 +159,17 @@ void NetworkManager::ConnectWithinMaxClient()
 	{
 		// 0. 최대 클라이언트 수인지 체크.
 		if (_ClientIndexType nowClientIndex = connectedClientCount.load();
-			nowClientIndex == FRAMEWORK::MAX_CLIENT) return;
+			nowClientIndex == FRAMEWORK::MAX_CLIENT) return true; 
 		else
 		{
 			// 1. 해당 인덱스의 소켓 생성.
 			if (clientArr[nowClientIndex]->socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)
-				; clientArr[nowClientIndex]->socket == INVALID_SOCKET) ERROR_UTIL::ERROR_QUIT(L"Create_Socket()");
+				; clientArr[nowClientIndex]->socket == INVALID_SOCKET)
+			{
+				ERROR_UTIL::ERROR_DISPLAY(L"Create_Socket()");
+				return false;
+			}
+
 
 			// 2. 클라이언트 정보 구조체 객체 설정.
 			SOCKADDR_IN serverAddr;
@@ -177,7 +183,11 @@ void NetworkManager::ConnectWithinMaxClient()
 
 			// 4. 커넥트!!!!!!!!! 가즈아아아아아앗!!!!!!!
 			if (int retVal = connect(clientArr[nowClientIndex]->socket, (SOCKADDR*)& serverAddr, sizeof(serverAddr))
-				; retVal == SOCKET_ERROR) ERROR_UTIL::ERROR_QUIT(L"connect()");
+				; retVal == SOCKET_ERROR)
+			{
+				ERROR_UTIL::ERROR_DISPLAY(L"connect()");
+				return false;
+			}
 
 			// 5. 해당 클라이언트 상태를 커넥트로 변경함.
 			clientArr[nowClientIndex]->isConnect = true;
@@ -191,8 +201,9 @@ void NetworkManager::ConnectWithinMaxClient()
 			// 8. Connect에 대한 커스텀 함수 제공.
 			ProcessConnect_CUSTOM(clientArr[nowClientIndex]);
 		}
-	}
 
+		return true;
+	}
 }
 
 void NetworkManager::SendPacket(const _ClientType* const pClient, const char* const packetData)

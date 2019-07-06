@@ -59,14 +59,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			if (msg.message == WM_QUIT) break;
+ 			if (msg.message == WM_QUIT) break;
 			if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
-				::TranslateMessage(&msg);
-				::DispatchMessage(&msg);
+  				::TranslateMessage(&msg);
+ 				::DispatchMessage(&msg);
 			}
 		}
-	}
+   	}
 
     return (int) msg.wParam;
 }
@@ -161,6 +161,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			framework = std::make_unique<DummyClientFramework>();
+			framework->Create(hWnd);
 			SetTimer(hWnd, WINDOW::MAIN_TIMER_INDEX, WINDOW::MAIN_TIMER_FRAME, NULL);
 		}
 		break;
@@ -180,13 +181,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			EndPaint(hWnd, &ps);
         }
         break;
+		
 	case WM_TIMER:
+		if (framework->Update())
 		{
-			framework->Update();
 			InvalidateRgn(hWnd, NULL, false);
+			break;
 		}
-		break;
+		_FALLTHROUGH;
     case WM_DESTROY:
+		std::cout << "Called Kill Framework\n";
+		KillTimer(hWnd, WINDOW::MAIN_TIMER_INDEX);
         PostQuitMessage(0);
         break;
     default:

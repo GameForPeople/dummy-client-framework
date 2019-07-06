@@ -18,6 +18,7 @@ void DummyClientFramework::Create(HWND hWnd)
 {
 	this->hWnd = hWnd;
 	networkManager = std::make_unique<NetworkManager>();
+	std::cout << "[INIT] NetworkManager가 정상적으로 실행되었습니다." << std::endl;
 }
 
 void DummyClientFramework::Draw(HDC hdc)
@@ -39,10 +40,14 @@ void DummyClientFramework::Draw(HDC hdc)
 	TextOutW(hdc, 50, 50, tempStr.c_str(), wcslen(tempStr.c_str())); // tempStr.length() or tempStr.size()
 }
 
-void DummyClientFramework::Update()
+bool DummyClientFramework::Update()
 {
-	networkManager->ConnectWithinMaxClient();
-	networkManager->ProcessUpdate_CUSTOM();
+	if (networkManager->ConnectWithinMaxClient())
+	{
+		networkManager->ProcessUpdate_CUSTOM();
+		return true;
+	}
+	else return false;
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -63,7 +68,6 @@ void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 	case WM_KEYUP:
 	{
-
 	}
 	break;
 	}

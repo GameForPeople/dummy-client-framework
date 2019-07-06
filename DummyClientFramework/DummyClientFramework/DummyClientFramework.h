@@ -10,7 +10,7 @@ public:
 
 	void Create(HWND hWnd);
 	void Draw(HDC hdc);
-	void Update();
+	bool Update();
 	void InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam);
 
 private:

@@ -18,7 +18,7 @@ private:
 	static void RunWorkerThread(LPVOID arg);
 	void WorkerThreadFunction();
 
-	void ConnectWithinMaxClient();
+	bool ConnectWithinMaxClient();
 	void SetRecv(const _ClientIndexType inRecvClientIndex);
 
 	void LoadRecvData(_ClientType* pClient, int restSize);

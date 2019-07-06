@@ -161,7 +161,6 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	// NetworkManager::ConnectWithinMaxClient에 이미 정의되어 있으며,
 	// framework의 update 부분에서, 이 함수 전에 호출됩니다.
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
-
 	// 랜덤 4방향 하나 보내줍니다.
 	for(auto pClient : clientArr)
 	{
