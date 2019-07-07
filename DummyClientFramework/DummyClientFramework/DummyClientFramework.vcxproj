@@ -152,6 +152,7 @@
     <ClInclude Include="Define.h" />
     <ClInclude Include="Custom.hh" />
     <ClInclude Include="DummyClientFramework.h" />
+    <ClInclude Include="LogManager.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="NetworkManager.h" />
     <ClInclude Include="RenderModelManager.h" />
@@ -164,6 +165,7 @@
     <ClCompile Include="Custom.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="DummyClientFramework.cpp" />
+    <ClCompile Include="LogManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
     <ClCompile Include="RenderModelManager.cpp" />

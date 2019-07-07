@@ -53,10 +53,6 @@ void NetworkManager::InitNetwork()
 
 	// 3. 워커 쓰레드 함수 할당.
 	for (auto& thread : workerThreadArr) thread = std::thread{ RunWorkerThread, (LPVOID)this };
-
-#ifdef _DEBUG
-	std::cout << "[INIT] 더미 클라이언트가 정상적으로 실행되었습니다." << std::endl;
-#endif
 }
 
 void NetworkManager::RunWorkerThread(LPVOID arg)

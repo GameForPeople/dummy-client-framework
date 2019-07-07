@@ -56,6 +56,9 @@
     <ClInclude Include="RenderModelManager.h">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="LogManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkManager.cpp">
@@ -78,6 +81,9 @@
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
     <ClCompile Include="RenderModelManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="LogManager.cpp">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
   </ItemGroup>

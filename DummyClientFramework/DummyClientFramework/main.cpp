@@ -9,6 +9,8 @@
 #include "Define.h"
 #include "Custom.hh"
 
+#include "LogManager.h"
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -190,7 +192,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		_FALLTHROUGH;
     case WM_DESTROY:
-		std::cout << "Called Kill Framework\n";
+		LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"프레임워크를 종료합니다.");
+		LogManager::DeleteInstance();
 		KillTimer(hWnd, WINDOW::MAIN_TIMER_INDEX);
         PostQuitMessage(0);
         break;

@@ -51,3 +51,27 @@ namespace ERROR_UTIL
 	void HandleRecvError();
 	void HandleSendError();
 }
+
+// FIXED
+namespace TIME_UTIL
+{
+	const std::string GetCurrentDateTime();
+}
+
+// FIXED
+namespace ATOMIC_UTIL {
+	template <class TYPE>
+	bool T_CAS(std::atomic<TYPE> *addr, TYPE inOldValue, TYPE inNewValue)
+	{
+		return atomic_compare_exchange_strong(addr, &inOldValue, inNewValue);
+	}
+}
+
+// FIXED
+namespace UNICODE_UTIL
+{
+	void SetLocaleForKorean();
+
+	_NODISCARD std::string WStringToString(const std::wstring& InWstring);
+	_NODISCARD std::wstring StringToWString(const std::string& InString);
+}

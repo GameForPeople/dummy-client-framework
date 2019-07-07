@@ -36,10 +36,14 @@
 
 #include <array>
 #include <concurrent_queue.h>
+#include <concurrent_vector.h>
 
 #include <string>
 
 #include <cassert>
+
+#include <fstream>
+#include <filesystem>
 
 #define		_NORETURN			[[noreturn]]
 #define		_NODISCARD			[[nodiscard]]

@@ -2,6 +2,7 @@
 #include "SendMemoryPool.h"
 
 #include "Define.h"
+#include "LogManager.h"
 //---------------------------------------------------------------------------
 // SendMemoryPool
 //---------------------------------------------------------------------------
@@ -11,9 +12,7 @@ SendMemoryPool::SendMemoryPool()
 	for (int i = 0; i < FRAMEWORK::MAX_COUNT_MEMORY_UNIT_OF_SEND_POOL; ++i)
 		sendMemoryPool.push(/*new SendMemoryUnit()*/ std::move(new SendMemoryUnit()));
 
-#ifdef _DEBUG
-	std::cout << "!. sendMemoryPool의 초기 할당 사이즈는 " << sendMemoryPool.unsafe_size() << " 입니다." << std::endl;
-#endif
+	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"sendMemoryPool의 초기 할당 사이즈는" + std::to_wstring(sendMemoryPool.unsafe_size()) + L" 입니다.");
 }
 
 SendMemoryPool::~SendMemoryPool()

@@ -3,22 +3,27 @@
 #include "DummyClientFramework.h"
 
 #include "Define.h"
+#include "LogManager.h"
 
 DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/)
 	: hWnd()
 	, networkManager()
 {
+	// 보장되어야 합니다.
+	LogManager::MakeInstance();
 }
 
 DummyClientFramework::~DummyClientFramework()
 {
+	LogManager::GetInstance()->DeleteInstance();
 }
 
 void DummyClientFramework::Create(HWND hWnd)
 {
 	this->hWnd = hWnd;
 	networkManager = std::make_unique<NetworkManager>();
-	std::cout << "[INIT] NetworkManager가 정상적으로 실행되었습니다." << std::endl;
+
+	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"더미 클라이언트가 정상적으로 실행되었습니다.");
 }
 
 void DummyClientFramework::Draw(HDC hdc)
