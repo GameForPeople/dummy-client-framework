@@ -63,11 +63,8 @@ void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KEYDOWN:
 	{
-		if (wParam == VK_Q)
-		{
-			SendMessage(hWnd, WM_DESTROY, 0, 0);
-			return;
-		}
+		if (wParam == VK_P) {}
+		if (wParam == VK_Q) { SendMessage(hWnd, WM_DESTROY, 0, 0); return; }
 	}
 	break;
 

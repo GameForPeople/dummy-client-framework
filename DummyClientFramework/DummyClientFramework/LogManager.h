@@ -28,9 +28,14 @@ private:
 	LogManager();
 	~LogManager() = default;
 
-	LogManager(const LogManager&) = delete;
-	LogManager& operator=(const LogManager&) = delete;
-
 	static std::once_flag instanceFlag;
 	std::atomic<bool> saveFlag;
+
+#ifdef _DEBUG
+	std::mutex printLock;
+#endif
+
+public:
+	LogManager(const LogManager&) = delete;
+	LogManager& operator=(const LogManager&) = delete;
 };

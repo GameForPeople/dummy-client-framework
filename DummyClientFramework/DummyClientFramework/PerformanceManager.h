@@ -1,0 +1,47 @@
+#pragma once
+
+#define PERFORMANCE_LOG
+
+enum class FUNCTION_NAME : int
+{
+	ENUM_SIZE = 1
+};
+
+struct PerformanceUnit
+{
+	using _StartTimeType = std::chrono::steady_clock::time_point;
+	using _ResultTimeType = std::chrono::milliseconds;
+public:
+
+	FUNCTION_NAME function;
+	_StartTimeType startTime;
+	_ResultTimeType resultTime;
+
+	PerformanceUnit(const FUNCTION_NAME);
+	~PerformanceUnit();
+};
+
+class PerformanceManager
+{
+	using _ResultContType = std::array<concurrency::concurrent_queue<PerformanceUnit::_ResultTimeType>, static_cast<int>(FUNCTION_NAME::ENUM_SIZE)>;
+public:
+	_NODISCARD static inline PerformanceManager* GetInstance() noexcept { return PerformanceManager::instance; }
+
+	static void MakeInstance();
+	static void DeleteInstance();
+
+	_NODISCARD std::unique_ptr<PerformanceUnit> StartTimer(const FUNCTION_NAME); //	void EndTimer( _PerformanceUnitType );
+
+	void AddTimeResult(const PerformanceUnit& performanceUnit);
+	_ResultContType& GetResultCont();
+
+private:
+	static PerformanceManager* instance;
+	_ResultContType resultCont;
+
+	PerformanceManager();
+	~PerformanceManager() = default;
+public:
+	PerformanceManager(const PerformanceManager&) = delete;
+	PerformanceManager& operator=(const PerformanceManager&) = delete;
+};

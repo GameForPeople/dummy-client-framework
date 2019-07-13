@@ -59,6 +59,12 @@
     <ClInclude Include="LogManager.h">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="PerformanceManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="magic_enum.hpp">
+      <Filter>Fixed\Fixed_Framework\Define</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkManager.cpp">
@@ -84,6 +90,9 @@
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
     <ClCompile Include="LogManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="PerformanceManager.cpp">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
   </ItemGroup>

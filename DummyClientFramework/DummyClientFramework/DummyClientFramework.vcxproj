@@ -153,8 +153,10 @@
     <ClInclude Include="Custom.hh" />
     <ClInclude Include="DummyClientFramework.h" />
     <ClInclude Include="LogManager.h" />
+    <ClInclude Include="magic_enum.hpp" />
     <ClInclude Include="main.h" />
     <ClInclude Include="NetworkManager.h" />
+    <ClInclude Include="PerformanceManager.h" />
     <ClInclude Include="RenderModelManager.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SendMemoryPool.h" />
@@ -168,6 +170,7 @@
     <ClCompile Include="LogManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NetworkManager.cpp" />
+    <ClCompile Include="PerformanceManager.cpp" />
     <ClCompile Include="RenderModelManager.cpp" />
     <ClCompile Include="SendMemoryPool.cpp" />
     <ClCompile Include="stdafx.cpp">
