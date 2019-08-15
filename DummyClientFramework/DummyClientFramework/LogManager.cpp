@@ -5,8 +5,8 @@
 #include "Define.h"
 #include "PerformanceManager.h"
 
-LogManager* LogManager::instance = nullptr;
-std::once_flag LogManager::instanceFlag;
+//LogManager* LogManager::instance = nullptr;
+//std::once_flag LogManager::instanceFlag;
 
 LogManager::LogManager()
 	: logFilePath("Log/DummyClientFramework_log_" + TIME_UTIL::GetCurrentDateTime() + ".txt")

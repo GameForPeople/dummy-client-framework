@@ -9,7 +9,6 @@ DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/
 	: hWnd()
 	, networkManager()
 {
-	// 보장되어야 합니다.
 	LogManager::MakeInstance();
 }
 

@@ -2,7 +2,7 @@
 
 #include "PerformanceManager.h"
 
-PerformanceManager* PerformanceManager::instance = nullptr;
+//PerformanceManager* PerformanceManager::instance = nullptr;
 
 PerformanceUnit::PerformanceUnit(const FUNCTION_NAME inFuntionName)
 	: function(inFuntionName)

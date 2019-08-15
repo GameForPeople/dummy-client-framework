@@ -23,12 +23,12 @@ private:
 	concurrency::concurrent_vector<std::pair<LOG_TYPE, std::wstring>> logCont;
 
 private:
-	static LogManager* instance;
+	static inline LogManager* instance{ nullptr };
 
 	LogManager();
 	~LogManager() = default;
 
-	static std::once_flag instanceFlag;
+	static inline std::once_flag instanceFlag{};
 	std::atomic<bool> saveFlag;
 
 #ifdef _DEBUG

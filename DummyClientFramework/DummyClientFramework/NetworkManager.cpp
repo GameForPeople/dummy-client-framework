@@ -166,7 +166,6 @@ bool NetworkManager::ConnectWithinMaxClient()
 				return false;
 			}
 
-
 			// 2. 클라이언트 정보 구조체 객체 설정.
 			SOCKADDR_IN serverAddr;
 			ZeroMemory(&serverAddr, sizeof(serverAddr));
@@ -200,6 +199,8 @@ bool NetworkManager::ConnectWithinMaxClient()
 
 		return true;
 	}
+
+	return true;
 }
 
 void NetworkManager::SendPacket(const _ClientType* const pClient, const char* const packetData)

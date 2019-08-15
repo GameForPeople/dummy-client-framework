@@ -35,7 +35,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
-	 // 편한 디버깅 환경을 제공하기 위해, 디버그 모드일 때, 콘솔창을 켜줍니다.
+
+	 // 로그 확인을 위해, 디버그 모드일 때, 콘솔창을 켜줍니다.
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") 
 #else
@@ -191,12 +192,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		_FALLTHROUGH;
+
     case WM_DESTROY:
 		LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"프레임워크를 종료합니다.");
 		LogManager::DeleteInstance();
 		KillTimer(hWnd, WINDOW::MAIN_TIMER_INDEX);
         PostQuitMessage(0);
         break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

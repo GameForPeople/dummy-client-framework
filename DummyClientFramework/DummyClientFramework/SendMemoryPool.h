@@ -2,7 +2,7 @@
 
 #include "Custom.hh"
 
-class SendMemoryPool // Singleton
+class SendMemoryPool
 {
 public:
 	SendMemoryPool();

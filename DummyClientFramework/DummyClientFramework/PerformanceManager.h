@@ -36,7 +36,7 @@ public:
 	_ResultContType& GetResultCont();
 
 private:
-	static PerformanceManager* instance;
+	static inline PerformanceManager* instance{ nullptr };
 	_ResultContType resultCont;
 
 	PerformanceManager();

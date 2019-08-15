@@ -21,11 +21,11 @@ namespace FRAMEWORK
 
 namespace GAME
 {
-	constexpr static int ZONE_MIN_X = 0;	// 테스트 하는 서버의 X 최저값 좌표입니다.
-	constexpr static int ZONE_MIN_Y = 0;	// 테스트 하는 서버의 Y 최저값 좌표입니다.
+	constexpr static int ZONE_MIN_X = 0;	// 테스트 하는 서버 Zone의 X 최저값 좌표입니다.
+	constexpr static int ZONE_MIN_Y = 0;	// 테스트 하는 서버 Zone의 Y 최저값 좌표입니다.
 
-	constexpr static int ZONE_MAX_X = 8000;	// 테스트 하는 서버의 X 최대값 좌표입니다.
-	constexpr static int ZONE_MAX_Y = 8000;	// 테스트 하는 서버의 Y 최대값 좌표입니다.
+	constexpr static int ZONE_MAX_X = 8000;	// 테스트 하는 서버 Zone의 X 최대값 좌표입니다.
+	constexpr static int ZONE_MAX_Y = 8000;	// 테스트 하는 서버 Zone의 Y 최대값 좌표입니다.
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
@@ -42,7 +42,7 @@ namespace NETWORK
 	constexpr static int MAX_PACKET_SIZE = 127;	// Packet의 최대 크기입니다.  sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
 }
 
-namespace USING
+namespace USING_DEFINE
 {
 	using _PosType = unsigned short;
 	using _ClientIndexType = unsigned int;
@@ -50,7 +50,7 @@ namespace USING
 	using _PacketType = unsigned char;
 	using _DirectionType = unsigned char;
 
-}using namespace USING;
+}using namespace USING_DEFINE;
 
 namespace MEMORY 
 {
