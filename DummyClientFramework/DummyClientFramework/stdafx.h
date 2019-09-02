@@ -47,6 +47,8 @@
 
 #include <chrono>
 
+#include <any>
+
 #define		_NORETURN			[[noreturn]]
 #define		_NODISCARD			[[nodiscard]]
 #define		_DEPRECATED			[[deprecated]]

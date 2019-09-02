@@ -3,6 +3,8 @@
 #include "Custom.hh"
 #include "RenderModelManager.h"
 
+// Temp Deprecated
+
 /*
 //-----------------------------------------------------
 // BitModel

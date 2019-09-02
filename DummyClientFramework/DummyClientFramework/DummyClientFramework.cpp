@@ -9,6 +9,7 @@ DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/
 	: hWnd()
 	, networkManager()
 {
+	TestIntegrity();
 	LogManager::MakeInstance();
 }
 
@@ -22,7 +23,11 @@ void DummyClientFramework::Create(HWND hWnd)
 	this->hWnd = hWnd;
 	networkManager = std::make_unique<NetworkManager>();
 
-	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"더미 클라이언트가 정상적으로 실행되었습니다.");
+#ifdef DEFAULT_TEST_MODE
+	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"DEFAULT_TEST_MODE 더미 클라이언트가 정상적으로 실행되었습니다.");
+#elif HOTSPOT_TEST_MODE
+	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"HOTSPOT_TEST_MODE 더미 클라이언트가 정상적으로 실행되었습니다.");
+#endif
 }
 
 void DummyClientFramework::Draw(HDC hdc)

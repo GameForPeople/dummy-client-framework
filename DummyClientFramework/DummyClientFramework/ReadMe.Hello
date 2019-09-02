@@ -1,0 +1,9 @@
+해당 프로젝트는 MMORPG 게임 서버의 간단한 Dummy Client ( Test Server, Stress Client ) 입니다.
+
+Custom.hh, Custom.cpp 만 테스트 하시려는 서버에 맞게 수정하시면, 사용하실 수 있는 테스트 클라이언트입니다.
+
+신입 서버 프로그래머의 포토폴리오이므로, 해당 프로그램이 불안정 할 수 있습니다.
+
+깃헙 저장소에서 자세한 사항을 확인할 수 있습니다. ( 링크 : https://github.com/GameForPeople/dummy-client-framework )
+
+감사합니다.

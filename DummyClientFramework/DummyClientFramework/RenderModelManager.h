@@ -1,5 +1,7 @@
 #pragma once
 
+// Temp Deprecated
+
 /*
 __interface InterfaceBaseModel
 {

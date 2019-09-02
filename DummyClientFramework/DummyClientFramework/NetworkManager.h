@@ -29,6 +29,8 @@ private:
 	void ProcessConnect_CUSTOM(_ClientType * pClient);
 	void ProcessPacket_CUSTOM(_ClientType * pClient);
 	void ProcessUpdate_CUSTOM();
+	void ProcessDecode_CUSTOM(_ClientType* pClient);
+	void ProcessEncode_CUSTOM(SendMemoryUnit* pClient);
 
 private:
 	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>	clientArr;

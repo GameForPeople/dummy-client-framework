@@ -23,6 +23,7 @@ SendMemoryPool::~SendMemoryPool()
 		delete pRetMemoryUnit;
 	}
 
+	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"sendMemoryPool의 소멸자가 호출되었습니다. ");
 	sendMemoryPool.clear();
 }
 
@@ -45,6 +46,8 @@ SendMemoryUnit* SendMemoryPool::PopMemory()
 #ifdef _DEBUG
 		ERROR_UTIL::ERROR_DISPLAY(L"[ERROR] SendPool의 적정 메모리가 부족해 추가할당하였습니다.");
 #endif
+		LogManager::GetInstance()->AddLog(LOG_TYPE::WARNING_LOG, L"sendMemoryPool의 적정 메모리가 부족해, ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL만큼 추가할당하였습니다. ");
+
 		/*
 			적정 메모리 풀 사이즈 측정.
 		*/

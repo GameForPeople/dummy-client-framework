@@ -93,7 +93,9 @@ enum class TIMER_TYPE
 struct TimerUnit
 {
 	TIMER_TYPE timerType;
-	_ClientIndexType objectKey;
+	_ClientIndexType ownerKey;	// 해당 타이머를 제작한 키.
+	_ClientIndexType targetKey; // 해당 타이머의 목적이 되는 키.
+	std::any timerData;	// timerType에 따른 Data를 가짐.
 
 public:
 	TimerUnit();

@@ -65,6 +65,9 @@
     <ClInclude Include="magic_enum.hpp">
       <Filter>Fixed\Fixed_Framework\Define</Filter>
     </ClInclude>
+    <ClInclude Include="TimerManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetworkManager.cpp">
@@ -95,6 +98,9 @@
     <ClCompile Include="PerformanceManager.cpp">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="TimerManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DummyClientFramework.rc">
@@ -108,5 +114,8 @@
     <Image Include="DummyClientFramework.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.Hello" />
   </ItemGroup>
 </Project>

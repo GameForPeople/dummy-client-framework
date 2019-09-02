@@ -1,5 +1,11 @@
 #pragma once
 
+#define DEFAULT_TEST_MODE	// 디폴트 테스트 모드.
+
+#ifndef DEFAULT_TEST_MODE
+#define HOTSPOT_TEST_MODE	// 핫 스팟 테스트 모드.
+#endif
+
 namespace WINDOW
 {
 	constexpr static int WINDOW_WIDTH = 800;	// 윈도우의 X Size 변경 시, 수정해주세요.
@@ -17,6 +23,8 @@ namespace FRAMEWORK
 	
 	constexpr static int MAX_COUNT_MEMORY_UNIT_OF_SEND_POOL = 1000000;	// Send Memory Pool의 최초 할당 메모리 유닛 개수입니다.
 	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당합니다.
+
+	constexpr static int PRE_MAKE_TIMER_UNIT_COUNT = 100000;
 }
 
 namespace GAME

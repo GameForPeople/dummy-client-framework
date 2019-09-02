@@ -6,14 +6,13 @@
 
 #include "DummyClientFramework.h"
 
-#include "Define.h"
 #include "Custom.hh"
 
 #include "LogManager.h"
 
 #define MAX_LOADSTRING 100
 
-// 전역 변수:
+// 결국 전역 변수..
 static std::unique_ptr<DummyClientFramework> framework;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -34,9 +33,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: 여기에 코드를 입력합니다.
-
-	 // 로그 확인을 위해, 디버그 모드일 때, 콘솔창을 켜줍니다.
+	 // 로그 확인을 위해, 콘솔창을 켜줍니다.
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") 
 #else
@@ -73,7 +70,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     return (int) msg.wParam;
 }
-
 
 
 //
@@ -191,15 +187,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRgn(hWnd, NULL, false);
 			break;
 		}
+		LogManager::GetInstance()->AddLog(LOG_TYPE::ERROR_LOG, L"프레임워크 인스턴스가 nullptr입니다.");
 		_FALLTHROUGH;
-
     case WM_DESTROY:
 		LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"프레임워크를 종료합니다.");
 		LogManager::DeleteInstance();
 		KillTimer(hWnd, WINDOW::MAIN_TIMER_INDEX);
         PostQuitMessage(0);
         break;
-
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }

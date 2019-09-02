@@ -85,6 +85,7 @@ void NetworkManager::WorkerThreadFunction()
 
 		if (reinterpret_cast<BaseMemoryUnit*>(pMemoryUnit)->isRecv)
 		{
+			ProcessDecode_CUSTOM(reinterpret_cast<_ClientType*>(pMemoryUnit));
 			LoadRecvData(reinterpret_cast<_ClientType*>(pMemoryUnit), cbTransferred);
 			SetRecv(reinterpret_cast<_ClientType*>(pMemoryUnit)->key);
 		}
@@ -208,7 +209,9 @@ void NetworkManager::SendPacket(const _ClientType* const pClient, const char* co
 	auto sendMemoryUnit = sendMemoryPool->PopMemory();
 	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
 	sendMemoryUnit->wsaBuf.len = packetData[0];
-
+	
+	ProcessEncode_CUSTOM(sendMemoryUnit);
+	
 	DWORD flag{};
 	ZeroMemory(&sendMemoryUnit->overlapped, sizeof(sendMemoryUnit->overlapped));
 

@@ -62,6 +62,22 @@ void LogManager::SaveLog()
 	outFile << "";
 	outFile << "===========================================";
 
+	// Save Log
+	for (const auto& [logType, logData] : logCont)
+	{
+		switch (logType)
+		{
+			case LOG_TYPE::WARNING_LOG:	outFile << L"[WARNING] " << logData;	break;
+			case LOG_TYPE::ERROR_LOG:	outFile << L"[ERROR] " << logData;		break;
+			case LOG_TYPE::DEV_LOG:		outFile << L"[LOG] " << logData;		break;
+			default: outFile << L"[???] " << logData;
+		}
+	}
+
+	outFile << "";
+	outFile << "===========================================";
+	outFile << "";
+
 #ifdef PERFORMANCE_LOG //Use PerformanceManager?
 	assert(PerformanceManager::GetInstance() != nullptr, L"PerformanceManager를 LogManager이전에 제거하지 마세요!");
 	auto& resultCont = PerformanceManager::GetInstance()->GetResultCont();
@@ -88,7 +104,7 @@ void LogManager::SaveLog()
 
 		sumValue /= functionCallCount;
 
-		const std::string tempString = std::string(functionNameCont[++index]);
+		const std::string tempString = std::string(functionNameCont[(++index)]);
 		outFile << L"함수 : " << UNICODE_UTIL::StringToWString(tempString)
 				<< L" , 불린 횟수 : " << functionCallCount 
 				<< L" , 평균 소요 시간 : " << sumValue.count();
@@ -100,18 +116,6 @@ void LogManager::SaveLog()
 	outFile << "";
 
 #endif
-
-	// Save Log
-	for (const auto& [logType, logData] : logCont)
-	{
-		switch (logType)
-		{
-			case LOG_TYPE::WARNING_LOG:	outFile << L"[WARNING] " << logData;	break;
-			case LOG_TYPE::ERROR_LOG:	outFile << L"[ERROR] " << logData;		break;
-			case LOG_TYPE::DEV_LOG:		outFile << L"[LOG] " << logData;		break;
-			default: outFile << L"[???] " << logData;
-		}
-	}
 
 	outFile << L"[GoodBye] 더미 클라이언트 프레임워크가 종료되었습니다. : "
 		+ UNICODE_UTIL::StringToWString(TIME_UTIL::GetCurrentDateTime()) ;
