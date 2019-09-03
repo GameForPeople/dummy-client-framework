@@ -24,7 +24,7 @@ namespace FRAMEWORK
 	constexpr static int MAX_COUNT_MEMORY_UNIT_OF_SEND_POOL = 1000000;	// Send Memory Pool의 최초 할당 메모리 유닛 개수입니다.
 	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당합니다.
 
-	constexpr static int PRE_MAKE_TIMER_UNIT_COUNT = 100000;
+	constexpr static int PRE_ALLOCATION_TIMER_UNIT_COUNT = 100000; // Timer Unit Pool의 사이즈!
 }
 
 namespace GAME
@@ -57,6 +57,7 @@ namespace USING_DEFINE
 	using _PacketSizeType = unsigned char;
 	using _PacketType = unsigned char;
 	using _DirectionType = unsigned char;
+	using _TimeType = unsigned long long;
 
 }using namespace USING_DEFINE;
 
