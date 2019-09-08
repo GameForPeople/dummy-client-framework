@@ -3,6 +3,7 @@
 #include "Custom.hh"
 #include "DummyClientFramework.h"
 #include "NetworkManager.h"
+#include "TimerManager.h"
 
 #pragma region [FIXED]
 //--------------------------------------
@@ -25,10 +26,10 @@ BaseMemoryUnit::~BaseMemoryUnit()
 // Send Memory Unit
 //--------------------------------------
 SendMemoryUnit::SendMemoryUnit()
-	: BaseMemoryUnit(false)
+	: memoryUnit(false)
 	, dataBuf()
 {
-	wsaBuf.buf = dataBuf;
+	memoryUnit.wsaBuf.buf = dataBuf;
 }
 
 SendMemoryUnit::~SendMemoryUnit()
@@ -36,39 +37,30 @@ SendMemoryUnit::~SendMemoryUnit()
 }
 
 //--------------------------------------
-// Base Client Info
+// Client Info
 //--------------------------------------
-BaseClientInfo::BaseClientInfo(const _ClientIndexType key)
-	: BaseMemoryUnit(true)
-	, key(key)
+
+ClientInfo::ClientInfo(const _ClientIndexType index)
+	: memoryUnit(true)
+	, key()
 	, socket()
 	, isConnect(false)
 	, loadedBuf()
 	, loadedSize(0)
-{
-	wsaBuf.buf = loadedBuf;
-}
-
-BaseClientInfo::~BaseClientInfo()
-{
-}
-
-#pragma endregion
-
-//--------------------------------------
-// Client Info
-//--------------------------------------
-ClientInfo::ClientInfo(const _ClientIndexType key)
-	: BaseClientInfo(key)
+	, dataBuf()
 	, isLogin(false)
 	, posX(0)
 	, posY(0)
+	, index(index)
 {
+	memoryUnit.wsaBuf.buf = loadedBuf;
 }
 
 ClientInfo::~ClientInfo()
 {
 }
+
+#pragma endregion
 
 //--------------------------------------
 // Test Integrity
@@ -94,7 +86,6 @@ void DummyClientFramework::TestIntegrity()
 			static_assert(NETWORK::MAX_SEND_SIZE > 0, L"NETWORK::MAX_SEND_SIZE가 0일리가 없습니다.");
 		}
 	}
-
 	//
 }
 
@@ -104,9 +95,13 @@ void DummyClientFramework::TestIntegrity()
 
 void NetworkManager::ProcessConnect_CUSTOM(_ClientType * pClient)
 {
-	/*
-		해당 예제에서는 어떤 것도 하지 않습니다.
-	*/
+#ifdef LOGIN_MODE
+	PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Login packet(std::to_wstring(pClient->index).c_str());
+	SendPacket(pClient, reinterpret_cast<char*>(&packet));
+#elif SIGNUP_MODE
+	PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::SignUp packet(std::to_wstring(pClient->index).c_str());
+	SendPacket(pClient, reinterpret_cast<char*>(&packet));
+#endif
 }
 
 void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
@@ -122,6 +117,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			
 			//PUT_OBJECT에서 검사 후 설정하도록 변경.
 			//if(packet->key == pClient->key) pClient->isLogin = true;
+			pClient->key = packet->key;
 		}
 		break;
 	case PUT_OBJECT:
@@ -135,7 +131,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 				pClient->posY = packet->posY;
 
 				if(pClient->isLogin == false) pClient->isLogin = true;
-				++connectedClientCount;
+				//++connectedClientCount;
 			}
 		}
 		break;
@@ -172,6 +168,24 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	}
 }
 
+void NetworkManager::ProcessDecode_CUSTOM(_ClientType* pClient)
+{
+	/*
+		해당 예제에서는 어떤 것도 하지 않습니다.
+	*/
+}
+
+void NetworkManager::ProcessEncode_CUSTOM(SendMemoryUnit* pClient)
+{
+	/*
+		해당 예제에서는 어떤 것도 하지 않습니다.
+	*/
+}
+
+void TimerManager::ProcessTimerEvent_CUSTOM(TimerUnit* pTimerUnit)
+{
+}
+
 namespace PACKET_EXAMPLE::DATA
 {
 	BasePacket::BasePacket(const _PacketSizeType size, const _PacketType type) noexcept
@@ -205,5 +219,19 @@ namespace PACKET_EXAMPLE::DATA
 			: BasePacket(sizeof(Move), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::MOVE)
 			, dir(dir)
 		{}
+
+		Login::Login(const _IDType* const pInId) noexcept
+			: BasePacket(sizeof(Login), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::LOGIN)
+			, id()
+		{
+			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH * 2);
+		}
+
+		SignUp::SignUp(const _IDType* const pInId) noexcept
+			: BasePacket(sizeof(Login), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::SIGN_UP)
+			, id()
+		{
+			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH * 2);
+		}
 	}
 }

@@ -96,9 +96,9 @@ void NetworkManager::WorkerThreadFunction()
 void NetworkManager::SetRecv(const _ClientIndexType inClientIndex)
 {
 	DWORD flag{};
-	ZeroMemory(&(clientArr[inClientIndex]->overlapped), sizeof(clientArr[inClientIndex]->overlapped));
+	ZeroMemory(&(clientArr[inClientIndex]->memoryUnit.overlapped), sizeof(clientArr[inClientIndex]->memoryUnit.overlapped));
 
-	if (SOCKET_ERROR == WSARecv(clientArr[inClientIndex]->socket, &(clientArr[inClientIndex]->wsaBuf), 1, NULL, &flag /* NULL*/, &(clientArr[inClientIndex]->overlapped), NULL))
+	if (SOCKET_ERROR == WSARecv(clientArr[inClientIndex]->socket, &(clientArr[inClientIndex]->memoryUnit.wsaBuf), 1, NULL, &flag /* NULL*/, &(clientArr[inClientIndex]->memoryUnit.overlapped), NULL))
 	{
 		ERROR_UTIL::HandleRecvError();
 	}
@@ -188,14 +188,14 @@ bool NetworkManager::ConnectWithinMaxClient()
 			// 5. 해당 클라이언트 상태를 커넥트로 변경함.
 			clientArr[nowClientIndex]->isConnect = true;
 
-			// 6. 해당 소켓에 대하여, Recv를 등록해줌.
-			SetRecv(nowClientIndex);
+			// 6. Connect에 대한 커스텀 함수 제공.
+			ProcessConnect_CUSTOM(clientArr[nowClientIndex]);
 
 			// 7. 접속한 클라이언트 수를 하나 증가시켜줌.
 			connectedClientCount.fetch_add(1);
 
-			// 8. Connect에 대한 커스텀 함수 제공.
-			ProcessConnect_CUSTOM(clientArr[nowClientIndex]);
+			// 8. 해당 소켓에 대하여, Recv를 등록해줌.
+			SetRecv(nowClientIndex);
 		}
 
 		return true;
@@ -208,12 +208,12 @@ void NetworkManager::SendPacket(const _ClientType* const pClient, const char* co
 {
 	auto sendMemoryUnit = sendMemoryPool->PopMemory();
 	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
-	sendMemoryUnit->wsaBuf.len = packetData[0];
+	sendMemoryUnit->memoryUnit.wsaBuf.len = packetData[0];
 	
 	ProcessEncode_CUSTOM(sendMemoryUnit);
 	
 	DWORD flag{};
-	ZeroMemory(&sendMemoryUnit->overlapped, sizeof(sendMemoryUnit->overlapped));
+	ZeroMemory(&sendMemoryUnit->memoryUnit.overlapped, sizeof(sendMemoryUnit->memoryUnit.overlapped));
 
-	WSASend(pClient->socket, &sendMemoryUnit->wsaBuf, 1, NULL, 0, &sendMemoryUnit->overlapped, NULL);
+	WSASend(pClient->socket, &sendMemoryUnit->memoryUnit.wsaBuf, 1, NULL, 0, &sendMemoryUnit->memoryUnit.overlapped, NULL);
 }

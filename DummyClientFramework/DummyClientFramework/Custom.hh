@@ -3,7 +3,13 @@
 #define DEFAULT_TEST_MODE	// 디폴트 테스트 모드.
 
 #ifndef DEFAULT_TEST_MODE
-#define HOTSPOT_TEST_MODE	// 핫 스팟 테스트 모드.
+#define HOTSPOT_TEST_MODE	 // 핫 스팟 테스트 모드. 
+#endif
+
+#define LOGIN_MODE	// 계정 로그인
+
+#ifndef LOGIN_MODE
+#define SIGNUP_MODE // 계정 생성
 #endif
 
 namespace WINDOW
@@ -17,7 +23,7 @@ namespace WINDOW
 
 namespace FRAMEWORK
 {
-	constexpr static int MAX_CLIENT = 10000;	// 테스트하려는 클라이언트 수를 변경하고자 할 때, 수정해주세요.
+	constexpr static int MAX_CLIENT = 1000;	// 테스트하려는 클라이언트 수를 변경하고자 할 때, 수정해주세요.
 	constexpr static int WORKER_THREAD_COUNT = 4;	// 더미 클라이언트에 사용할 워커쓰레드 개수를 설정해주세요.
 	constexpr static int CONNECTED_CLIENT_COUNT_IN_ONE_FRAME = 10; // Max Client까지 커넥트 하는 중일 떄, 한 틱에 커넥트 시도할 클라이언트 수.
 	
@@ -25,6 +31,8 @@ namespace FRAMEWORK
 	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당합니다.
 
 	constexpr static int PRE_ALLOCATION_TIMER_UNIT_COUNT = 100000; // Timer Unit Pool의 사이즈!
+
+	constexpr static int MAX_ID_LENGTH = 10;
 }
 
 namespace GAME
@@ -58,6 +66,7 @@ namespace USING_DEFINE
 	using _PacketType = unsigned char;
 	using _DirectionType = unsigned char;
 	using _TimeType = unsigned long long;
+	using _IDType = wchar_t;
 
 }using namespace USING_DEFINE;
 
@@ -67,7 +76,7 @@ namespace MEMORY
 	struct BaseMemoryUnit
 	{
 		BaseMemoryUnit(const bool isRecv);
-		virtual ~BaseMemoryUnit();
+		~BaseMemoryUnit();
 
 	public:
 		OVERLAPPED overlapped;
@@ -76,45 +85,43 @@ namespace MEMORY
 		const bool isRecv;	// true == recv, false == send
 	};
 
-	struct SendMemoryUnit : public BaseMemoryUnit
+	struct SendMemoryUnit /*: public BaseMemoryUnit*/
 	{
 		SendMemoryUnit();
-		virtual ~SendMemoryUnit() override final;
+		~SendMemoryUnit();
+		//virtual ~SendMemoryUnit() override final;
 
 	public:
+		BaseMemoryUnit memoryUnit;
 		char dataBuf[NETWORK::MAX_SEND_SIZE];
 	};
 
-	struct BaseClientInfo : public BaseMemoryUnit
+	struct ClientInfo /* : public BaseMemoryUnit */
 	{
-		BaseClientInfo(const _ClientIndexType key);
-		virtual ~BaseClientInfo() override;
+		ClientInfo(const _ClientIndexType key);
+		~ClientInfo();
+		//virtual ~BaseClientInfo() override;
 
-	public:
-		const _ClientIndexType key;
+	public: // Fixed
+		BaseMemoryUnit memoryUnit;
+		_ClientIndexType key;
 
 		SOCKET socket;
 		bool isConnect = false;
+		const _ClientIndexType index;
 
 		char dataBuf[NETWORK::MAX_RECV_SIZE];
-
 		char loadedBuf[NETWORK::MAX_PACKET_SIZE];
 		_PacketSizeType loadedSize;
-	};
-#pragma endregion
 
-	struct ClientInfo : public BaseClientInfo	// 사용 목적에 따라 해당 구조체를 수정해주세요.
-	{
-		ClientInfo(const _ClientIndexType key);
-		virtual ~ClientInfo() override final;
-
-	public:
+	public: // Custom
 		std::atomic<bool> isLogin = false;
 
 		_PosType posX;
 		_PosType posY;
 	};
-	using _ClientType = ClientInfo;	// 새로운 이름의 클라이언트 구조체 사용을 희망 시, 해당 "ClientInfo" 부분을 수정해주세요.
+#pragma endregion
+	using _ClientType = ClientInfo;	// 
 
 }using namespace MEMORY;
 
@@ -138,6 +145,8 @@ namespace PACKET_EXAMPLE
 			enum
 			{
 				MOVE = 0,
+				LOGIN = 1,
+				SIGN_UP = 2,
 				ENUM_SIZE
 			};
 		}
@@ -188,6 +197,18 @@ namespace PACKET_EXAMPLE
 				const _DirectionType dir;
 
 				Move(const _DirectionType dir) noexcept;
+			};
+
+			struct Login : public BasePacket {
+				_IDType id[FRAMEWORK::MAX_ID_LENGTH];
+
+				Login(const _IDType* const pInNickname) noexcept;
+			};
+
+			struct SignUp : public BasePacket {
+				_IDType id[FRAMEWORK::MAX_ID_LENGTH];
+
+				SignUp(const _IDType* const pInNickname) noexcept;
 			};
 		}
 	}
