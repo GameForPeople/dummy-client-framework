@@ -197,8 +197,6 @@ bool NetworkManager::ConnectWithinMaxClient()
 			// 8. 해당 소켓에 대하여, Recv를 등록해줌.
 			SetRecv(nowClientIndex);
 		}
-
-		return true;
 	}
 
 	return true;

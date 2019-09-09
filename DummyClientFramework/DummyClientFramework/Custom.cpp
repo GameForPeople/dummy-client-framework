@@ -118,12 +118,23 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			//PUT_OBJECT에서 검사 후 설정하도록 변경.
 			//if(packet->key == pClient->key) pClient->isLogin = true;
 			pClient->key = packet->key;
+
+			if (pClient->isLogin == false)
+			{
+				pClient->isLogin = true;
+				std::cout << "LOGIN FAIL!\n";
+			}
+		}
+		break;
+	case LOGIN_FAIL:
+		{
+			std::cout << "LOGIN FAIL!\n";
 		}
 		break;
 	case PUT_OBJECT:
 		{
 			PutObject* packet = reinterpret_cast<PutObject*>(pClient->loadedBuf);
-
+			
 			// 자신 말고, 다른 플레이어에 대한 PutObject는 무시.
 			if (packet->key == pClient->key)
 			{
@@ -138,6 +149,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 	case POSITION:
 		{
 			Position* packet = reinterpret_cast<Position*>(pClient->loadedBuf);
+
 			if (packet->key == pClient->key)
 			{
 				pClient->posX = packet->posX;
@@ -166,6 +178,7 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 			SendPacket(pClient, reinterpret_cast<char*>(&packet));
 		}
 	}
+	std::cout << "Update! \n";
 }
 
 void NetworkManager::ProcessDecode_CUSTOM(_ClientType* pClient)

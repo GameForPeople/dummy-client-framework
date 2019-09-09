@@ -133,9 +133,10 @@ namespace PACKET_EXAMPLE
 		{
 			enum
 			{
-				LOGIN_TRUE = 0,
-				PUT_OBJECT = 1,
-				POSITION = 2,
+				POSITION = 0,
+				LOGIN_TRUE = 1,
+				LOGIN_FAIL = 2,
+				PUT_OBJECT = 3,
 				ENUM_SIZE 
 			};
 		}
