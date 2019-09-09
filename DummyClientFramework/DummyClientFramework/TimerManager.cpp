@@ -5,7 +5,7 @@
 //---------------------------------------------------------------------------
 // TimerUnit
 //---------------------------------------------------------------------------
-TimerUnit::TimerUnit()
+TimerUnit::TimerUnit() noexcept
 	: timerType(TIMER_TYPE::NONE_TYPE), eventTime(),
 	ownerKey(), targetKey()
 {
@@ -39,7 +39,6 @@ TimerManager::~TimerManager()
 DWORD WINAPI TimerManager::StartTimerThread()
 {
 	TimerManager::GetInstance()->TimerThread();
-
 	return 0;
 };
 
@@ -58,7 +57,7 @@ void TimerManager::TimerThread()
 
 		if (tempNowTime < retTimerUnit->eventTime)
 		{
-			timerCont.push(retTimerUnit);
+			PushTimerUnit(retTimerUnit);
 			break;
 		}
 		
@@ -67,12 +66,15 @@ void TimerManager::TimerThread()
 	}
 }
 
-void TimerManager::AddTimerEvent(TimerUnit* inTimerUnit, TIME waitTime)
+void TimerManager::AddTimerEvent(const TIMER_TYPE inTimerType, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime)
 {
-	const _TimeType tempWaitTime = GetTickCount64() + static_cast<_TimeType>(waitTime);
-	inTimerUnit->eventTime = tempWaitTime;
+	TimerUnit* timerUnit = PopTimerUnit();
 
-	timerCont.push(inTimerUnit);
+	timerUnit->timerType = inTimerType;
+	timerUnit->ownerKey = ownerKey;
+	timerUnit->targetKey = targetKey;
+	timerUnit->eventTime = GetTickCount64() + static_cast<_TimeType>(waitTime);
+	timerCont.push(timerUnit);
 }
 
 TimerUnit* TimerManager::PopTimerUnit()

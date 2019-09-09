@@ -11,10 +11,8 @@ struct TimerMemoryHead;
 
 enum class TIME : /*unsigned short*/ _TimeType
 {
-	MAX_TIME = 600,
-
-	SECOND = 10,
-	MINUTE = 600,
+	SECOND = 1000,
+	MINUTE = 60000,
 };
 
 enum class TIMER_TYPE : unsigned char
@@ -41,9 +39,9 @@ public:
 
 struct TimerUnitCompareFunction 
 {
-	inline const bool operator()(TimerUnit* left, TimerUnit* right) noexcept 
+	bool operator()(TimerUnit* left, TimerUnit* right) noexcept 
 	{
-		return left->eventTime > right->eventTime;
+		return (left->eventTime) > (right->eventTime);
 	}
 };
 
@@ -59,10 +57,11 @@ public:
 public:
 	void TimerThread();
 	static DWORD WINAPI StartTimerThread();
+	void AddTimerEvent(const TIMER_TYPE, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime);
 
+private:
 	void ProcessTimerEvent_CUSTOM(TimerUnit*);
-	void AddTimerEvent(TimerUnit*, TIME);
-
+	
 	_NODISCARD TimerUnit* PopTimerUnit();
 	void PushTimerUnit(TimerUnit*);
 
@@ -76,9 +75,8 @@ private:
 	_TimeType nowTime;	// 
 	
 	//std::vector<concurrency::concurrent_queue<TimerUnit*>> timerCont;
-	concurrency::concurrent_priority_queue<TimerUnit*, std::vector<TimerUnit*>, TimerUnitCompareFunction> timerCont;
+	concurrency::concurrent_priority_queue<TimerUnit*, TimerUnitCompareFunction> timerCont;
 	concurrency::concurrent_queue<TimerUnit*> timerMemoryPool;
-
 public:
 	//concurrency::concurrent_queue<TimerUnit*>* GetTimerContWithIndex(const int inTimerContIndex);
 };
