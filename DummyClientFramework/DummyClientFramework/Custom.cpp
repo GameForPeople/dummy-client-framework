@@ -53,7 +53,7 @@ ClientInfo::ClientInfo(const _ClientIndexType index)
 	, posY(0)
 	, index(index)
 {
-	memoryUnit.wsaBuf.buf = loadedBuf;
+	memoryUnit.wsaBuf.buf = dataBuf;
 }
 
 ClientInfo::~ClientInfo()
@@ -122,7 +122,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			if (pClient->isLogin == false)
 			{
 				pClient->isLogin = true;
-				std::cout << "LOGIN TRUE!\n";
+				std::cout << "LOGIN TRUE! :: " << pClient->index << std::endl;
 			}
 		}
 		break;
@@ -156,6 +156,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 		break;
 	default: 
 		// 이 외의 패킷에 대해서는 무시합니다.
+		//std::cout << "unknown packet recved" << (int)(pClient->loadedBuf[1]) << std::endl;
 		break;
 	}
 }
@@ -167,20 +168,15 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	// framework의 update 부분에서, 이 함수 전에 호출됩니다.
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
 	// 랜덤 4방향 하나 보내줍니다.
-	int tempTrue{ 0 };
-	int tempFalse{ 0 };
-
+	
 	for(auto pClient : clientArr)
 	{
 		if (pClient->isLogin)
 		{
 			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
 			SendPacket(pClient, reinterpret_cast<char*>(&packet));
-			++tempTrue;
 		}
-		else ++tempFalse;
 	}
-	std::cout << "Update : " << tempTrue << ", " << tempFalse << "\n";
 }
 
 void NetworkManager::ProcessDecode_CUSTOM(_ClientType* pClient)

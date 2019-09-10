@@ -24,7 +24,7 @@ namespace WINDOW
 namespace FRAMEWORK
 {
 	constexpr static int MAX_CLIENT = 1000;	// 테스트하려는 클라이언트 수를 변경하고자 할 때, 수정해주세요.
-	constexpr static int WORKER_THREAD_COUNT = 4;	// 더미 클라이언트에 사용할 워커쓰레드 개수를 설정해주세요.
+	constexpr static int WORKER_THREAD_COUNT = 3;	// 더미 클라이언트에 사용할 워커쓰레드 개수를 설정해주세요.
 	constexpr static int CONNECTED_CLIENT_COUNT_IN_ONE_FRAME = 10; // Max Client까지 커넥트 하는 중일 떄, 한 틱에 커넥트 시도할 클라이언트 수.
 	
 	constexpr static int MAX_COUNT_MEMORY_UNIT_OF_SEND_POOL = 1000000;	// Send Memory Pool의 최초 할당 메모리 유닛 개수입니다.
@@ -168,6 +168,7 @@ namespace PACKET_EXAMPLE
 			struct LoginTrue : public BasePacket
 			{
 				const _ClientIndexType key;
+				char pb[40];
 
 				LoginTrue(const _ClientIndexType key) noexcept;
 			};
@@ -177,6 +178,8 @@ namespace PACKET_EXAMPLE
 				const _ClientIndexType key;
 				const _PosType posX;
 				const _PosType posY;
+
+				unsigned int pB0;
 
 				PutObject(const _ClientIndexType key, const _PosType posX, const _PosType posY) noexcept;
 			};
@@ -200,14 +203,17 @@ namespace PACKET_EXAMPLE
 				Move(const _DirectionType dir) noexcept;
 			};
 
-			struct Login : public BasePacket {
+			struct Login : public BasePacket
+			{
 				_IDType id[FRAMEWORK::MAX_ID_LENGTH];
 
 				Login(const _IDType* const pInNickname) noexcept;
 			};
 
-			struct SignUp : public BasePacket {
+			struct SignUp : public BasePacket
+			{
 				_IDType id[FRAMEWORK::MAX_ID_LENGTH];
+				int pb0;
 
 				SignUp(const _IDType* const pInNickname) noexcept;
 			};

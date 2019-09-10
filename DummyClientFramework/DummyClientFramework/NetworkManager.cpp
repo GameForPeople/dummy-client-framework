@@ -87,7 +87,7 @@ void NetworkManager::WorkerThreadFunction()
 		{
 			ProcessDecode_CUSTOM(reinterpret_cast<_ClientType*>(pMemoryUnit));
 			LoadRecvData(reinterpret_cast<_ClientType*>(pMemoryUnit), cbTransferred);
-			SetRecv(reinterpret_cast<_ClientType*>(pMemoryUnit)->key);
+			SetRecv(reinterpret_cast<_ClientType*>(pMemoryUnit)->index);
 		}
 		else sendMemoryPool->PushMemory(reinterpret_cast<SendMemoryUnit*>(pMemoryUnit));
 	}
@@ -174,28 +174,28 @@ bool NetworkManager::ConnectWithinMaxClient()
 			serverAddr.sin_addr.s_addr = inet_addr(NETWORK::SERVER_IP.c_str());
 			serverAddr.sin_port = htons(NETWORK::SERVER_PORT);
 			
-			// 3. 소켓과 입출력 완료 포트 연결.
-			CreateIoCompletionPort(reinterpret_cast<HANDLE>(clientArr[nowClientIndex]->socket), hIOCP, clientArr[nowClientIndex]->socket, 0);
-
-			// 4. 커넥트!!!!!!!!! 가즈아아아아아앗!!!!!!!
-			if (int retVal = connect(clientArr[nowClientIndex]->socket, (SOCKADDR*)& serverAddr, sizeof(serverAddr))
+			// 3. 커넥트!!!!!!!!! 가즈아아아아아앗!!!!!!!
+			if (int retVal = WSAConnect(clientArr[nowClientIndex]->socket, (SOCKADDR*)& serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL)
 				; retVal == SOCKET_ERROR)
 			{
 				ERROR_UTIL::ERROR_DISPLAY(L"connect()");
 				return false;
 			}
+			
+			// 4. 소켓과 입출력 완료 포트 연결.
+			CreateIoCompletionPort(reinterpret_cast<HANDLE>(clientArr[nowClientIndex]->socket), hIOCP, clientArr[nowClientIndex]->socket, 0);
 
 			// 5. 해당 클라이언트 상태를 커넥트로 변경함.
 			clientArr[nowClientIndex]->isConnect = true;
 
-			// 6. Connect에 대한 커스텀 함수 제공.
+			// 6. 해당 소켓에 대하여, Recv를 등록해줌.
+			SetRecv(nowClientIndex);
+
+			// 7. Connect에 대한 커스텀 함수 제공.
 			ProcessConnect_CUSTOM(clientArr[nowClientIndex]);
 
-			// 7. 접속한 클라이언트 수를 하나 증가시켜줌.
+			// 8. 접속한 클라이언트 수를 하나 증가시켜줌.
 			connectedClientCount.fetch_add(1);
-
-			// 8. 해당 소켓에 대하여, Recv를 등록해줌.
-			SetRecv(nowClientIndex);
 
 			std::cout << nowClientIndex << ":: \n";
 		}
