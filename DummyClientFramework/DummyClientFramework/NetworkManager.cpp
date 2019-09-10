@@ -196,8 +196,9 @@ bool NetworkManager::ConnectWithinMaxClient()
 
 			// 8. 접속한 클라이언트 수를 하나 증가시켜줌.
 			connectedClientCount.fetch_add(1);
-
-			std::cout << nowClientIndex << ":: \n";
+			
+			// 9. 딜레이.
+			std::this_thread::sleep_for(1ns);
 		}
 	}
 

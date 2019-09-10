@@ -40,6 +40,7 @@ void DummyClientFramework::Draw(HDC hdc)
 			const _PosType tempX = static_cast<_PosType>((static_cast<float>(pClient->posX - GAME::ZONE_MIN_X) / GAME::ZONE_X_SIZE) * WINDOW::WINDOW_WIDTH);
 			const _PosType tempY = static_cast<_PosType>((static_cast<float>(pClient->posY - GAME::ZONE_MIN_Y) / GAME::ZONE_Y_SIZE) * WINDOW::WINDOW_HEIGHT);
 
+			std::cout << "tempX : " << tempX << ", " << "tempY : " << tempY << "\n";
 			Rectangle(hdc, tempX, tempY, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
 		}
 	}

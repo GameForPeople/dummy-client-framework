@@ -57,3 +57,5 @@
 #define		_FALLTHROUGH		[[fallthrough]]
 
 #include "magic_enum.hpp"
+
+using namespace std::chrono;
