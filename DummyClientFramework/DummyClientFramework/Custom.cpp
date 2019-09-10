@@ -122,7 +122,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			if (pClient->isLogin == false)
 			{
 				pClient->isLogin = true;
-				std::cout << "LOGIN FAIL!\n";
+				std::cout << "LOGIN TRUE!\n";
 			}
 		}
 		break;
@@ -140,9 +140,6 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			{
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
-
-				if(pClient->isLogin == false) pClient->isLogin = true;
-				//++connectedClientCount;
 			}
 		}
 		break;
@@ -170,15 +167,20 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	// framework의 update 부분에서, 이 함수 전에 호출됩니다.
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
 	// 랜덤 4방향 하나 보내줍니다.
+	int tempTrue{ 0 };
+	int tempFalse{ 0 };
+
 	for(auto pClient : clientArr)
 	{
 		if (pClient->isLogin)
 		{
 			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
 			SendPacket(pClient, reinterpret_cast<char*>(&packet));
+			++tempTrue;
 		}
+		else ++tempFalse;
 	}
-	std::cout << "Update! \n";
+	std::cout << "Update : " << tempTrue << ", " << tempFalse << "\n";
 }
 
 void NetworkManager::ProcessDecode_CUSTOM(_ClientType* pClient)
@@ -237,14 +239,14 @@ namespace PACKET_EXAMPLE::DATA
 			: BasePacket(sizeof(Login), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::LOGIN)
 			, id()
 		{
-			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH * 2);
+			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH);
 		}
 
 		SignUp::SignUp(const _IDType* const pInId) noexcept
 			: BasePacket(sizeof(Login), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::SIGN_UP)
 			, id()
 		{
-			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH * 2);
+			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH);
 		}
 	}
 }

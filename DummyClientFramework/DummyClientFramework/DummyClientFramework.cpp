@@ -53,10 +53,15 @@ bool DummyClientFramework::Update()
 {
 	if (networkManager->ConnectWithinMaxClient())
 	{
+		std::cout << "true \n";
 		networkManager->ProcessUpdate_CUSTOM();
 		return true;
 	}
-	else return false;
+	else
+	{
+		std::cout << "false \n";
+		return false;
+	}
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)

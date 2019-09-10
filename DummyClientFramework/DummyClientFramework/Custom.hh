@@ -114,13 +114,13 @@ namespace MEMORY
 		char loadedBuf[NETWORK::MAX_PACKET_SIZE];
 		_PacketSizeType loadedSize;
 
+#pragma endregion
 	public: // Custom
 		std::atomic<bool> isLogin = false;
 
 		_PosType posX;
 		_PosType posY;
 	};
-#pragma endregion
 	using _ClientType = ClientInfo;	// 
 
 }using namespace MEMORY;

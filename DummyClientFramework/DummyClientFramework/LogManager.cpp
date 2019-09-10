@@ -44,11 +44,11 @@ void LogManager::AddLog(const LOG_TYPE logType, const std::wstring_view& logStri
 #ifdef _DEBUG
 		switch (logType)
 		{
-		case LOG_TYPE::WARNING_LOG: { std::unique_lock<std::mutex>localLock(printLock); std::wcout << L"[WARNING] " << logString;	break; }
-		case LOG_TYPE::ERROR_LOG: { std::unique_lock<std::mutex>localLock(printLock);  std::wcout << L"[ERROR] " << logString;		break; }
-		case LOG_TYPE::DEV_LOG: { std::unique_lock<std::mutex>localLock(printLock);  std::wcout << L"[LOG] " << logString;		break; }
+		case LOG_TYPE::WARNING_LOG: { std::unique_lock<std::mutex>localLock(printLock); std::wcout << L"[WARNING] " << logString << "\n";	break; }
+		case LOG_TYPE::ERROR_LOG: { std::unique_lock<std::mutex>localLock(printLock);  std::wcout << L"[ERROR] " << logString << "\n";		break; }
+		case LOG_TYPE::DEV_LOG: { std::unique_lock<std::mutex>localLock(printLock);  std::wcout << L"[LOG] " << logString << "\n";		break; }
 			default: 
-			{ std::unique_lock<std::mutex>localLock(printLock); std::wcout << L"[???] " << logString; }
+			{ std::unique_lock<std::mutex>localLock(printLock); std::wcout << L"[???] " << logString << "\n"; }
 		}
 #endif // _DEBUG
 }

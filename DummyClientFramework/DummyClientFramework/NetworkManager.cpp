@@ -155,7 +155,7 @@ bool NetworkManager::ConnectWithinMaxClient()
 	for (int i = 0; i < FRAMEWORK::CONNECTED_CLIENT_COUNT_IN_ONE_FRAME; ++i)
 	{
 		// 0. 최대 클라이언트 수인지 체크.
-		if (_ClientIndexType nowClientIndex = connectedClientCount.load();
+		if (_ClientIndexType nowClientIndex = GetConnectedClientCount();
 			nowClientIndex == FRAMEWORK::MAX_CLIENT) return true; 
 		else
 		{
@@ -196,6 +196,8 @@ bool NetworkManager::ConnectWithinMaxClient()
 
 			// 8. 해당 소켓에 대하여, Recv를 등록해줌.
 			SetRecv(nowClientIndex);
+
+			std::cout << nowClientIndex << ":: \n";
 		}
 	}
 

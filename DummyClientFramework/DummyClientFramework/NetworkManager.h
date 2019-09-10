@@ -44,5 +44,5 @@ private:
 	HANDLE hIOCP;
 
 public:
-	_NODISCARD _ClientIndexType GetConnectedClientCount() const noexcept { return connectedClientCount; };
+	_NODISCARD _ClientIndexType GetConnectedClientCount() const noexcept { return connectedClientCount.load(); };
 };
