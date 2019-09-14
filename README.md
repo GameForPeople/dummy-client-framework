@@ -6,7 +6,7 @@ GameServer Dummy Client Framework For TCP/IP Socket Server
 감사합니다.
 
  190910
-  - 기능 문제 수정 완료, 렌더, 로그, 퍼포먼스 매니지 픽스 
+  - 기능 문제 수정 완료, 렌더, 로그, 퍼포먼스 매니지 추가 작업 필요
 
-ty for!
+Thanks :)
   - [강수빈](https://github.com/Lyricia)
