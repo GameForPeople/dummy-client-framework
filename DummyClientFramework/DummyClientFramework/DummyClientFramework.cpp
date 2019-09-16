@@ -21,7 +21,13 @@ DummyClientFramework::~DummyClientFramework()
 void DummyClientFramework::Create(HWND hWnd)
 {
 	this->hWnd = hWnd;
-	networkManager = std::make_unique<NetworkManager>();
+
+	std::cout << "\n Client를 실행중이라면, 해당 Client의 UniqueKey 값을 입력해주세요(없으면 -1) :  ";
+
+	int tempUniqueKey{};
+	std::cin >> tempUniqueKey;
+
+	networkManager = std::make_unique<NetworkManager>(tempUniqueKey);
 
 #ifdef DEFAULT_TEST_MODE
 	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"DEFAULT_TEST_MODE 더미 클라이언트가 정상적으로 실행되었습니다.");
@@ -32,35 +38,58 @@ void DummyClientFramework::Create(HWND hWnd)
 
 void DummyClientFramework::Draw(HDC hdc)
 {
+	int tempCount{ 0 };
+	int zeroPosCount{ 0 };
 	//networkManager->clientArrLock.lock_shared();	// +++++++++++++++++++ 1
 	for (auto& pClient : networkManager->clientArr)
 	{
 		if (pClient->isLogin)
 		{
-			const _PosType tempX = static_cast<_PosType>((static_cast<float>(pClient->posX - GAME::ZONE_MIN_X) / GAME::ZONE_X_SIZE) * WINDOW::WINDOW_WIDTH);
-			const _PosType tempY = static_cast<_PosType>((static_cast<float>(pClient->posY - GAME::ZONE_MIN_Y) / GAME::ZONE_Y_SIZE) * WINDOW::WINDOW_HEIGHT);
-
-			std::cout << "tempX : " << tempX << ", " << "tempY : " << tempY << "\n";
-			Rectangle(hdc, tempX, tempY, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
+			const _PosType tempX = static_cast<_PosType>((pClient->posX - GAME::ZONE_MIN_X) * ((static_cast<float>(WINDOW::WINDOW_WIDTH) / GAME::ZONE_X_SIZE)));
+			const _PosType tempY = static_cast<_PosType>(((pClient->posY - GAME::ZONE_MIN_Y) * (static_cast<float>(WINDOW::WINDOW_HEIGHT) / GAME::ZONE_Y_SIZE)));
+			
+			Rectangle(hdc, tempX - GAME::ACTOR_X_SIZE, tempY - GAME::ACTOR_Y_SIZE, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
 		}
 	}
 	//networkManager->clientArrLock.unlock_shared(); // -------------------- 0
 	
+	if (networkManager->GetIsFindControlledClient())
+	{
+		HBRUSH	redBrush, oldBrush;
+		
+		redBrush = CreateSolidBrush ( RGB ( 255, 0, 0 ) );
+		oldBrush = (HBRUSH)SelectObject ( hdc, redBrush);
+		
+		auto [posX, posY] = networkManager->GetControlledClientPosition();
+		
+		posX = static_cast<_PosType>((posX - GAME::ZONE_MIN_X) * ((static_cast<float>(WINDOW::WINDOW_WIDTH) / GAME::ZONE_X_SIZE)));
+		posY = static_cast<_PosType>((posY - GAME::ZONE_MIN_Y) * ((static_cast<float>(WINDOW::WINDOW_HEIGHT) / GAME::ZONE_Y_SIZE)));
+
+		Rectangle(hdc, posX - GAME::ACTOR_X_SIZE * 2, posY - GAME::ACTOR_Y_SIZE * 2, posX + GAME::ACTOR_X_SIZE * 2, posY + GAME::ACTOR_Y_SIZE * 2);
+		
+		SelectObject ( hdc, oldBrush);
+		DeleteObject (redBrush);
+	}
+	
 	auto tempStr = (L"Dummy Count : " + std::to_wstring(networkManager->GetConnectedClientCount()));
-	TextOutW(hdc, 50, 50, tempStr.c_str(), wcslen(tempStr.c_str())); // tempStr.length() or tempStr.size()
+	
+	SetTextColor(hdc, RGB(255, 0, 0));
+	SetBkColor(hdc, RGB(255, 255, 0));
+	
+	TextOutW(hdc, 0, 0, tempStr.c_str(), wcslen(tempStr.c_str())); // tempStr.length() or tempStr.size()
 }
 
 bool DummyClientFramework::Update()
 {
 	if (networkManager->ConnectWithinMaxClient())
 	{
-		std::cout << "true \n";
+		std::cout << networkManager->GetConnectedClientCount() << "\n";
 		networkManager->ProcessUpdate_CUSTOM();
 		return true;
 	}
 	else
 	{
-		std::cout << "false \n";
+		std::cout << "Max Client! \n";
 		return false;
 	}
 }

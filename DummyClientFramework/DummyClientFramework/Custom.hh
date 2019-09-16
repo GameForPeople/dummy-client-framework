@@ -45,8 +45,8 @@ namespace GAME
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
-	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +10;
-	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +10;
+	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ 5;
+	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ 5;
 }
 
 namespace NETWORK

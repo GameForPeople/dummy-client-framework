@@ -4,10 +4,14 @@
 #include "SendMemoryPool.h"
 #include "NetworkManager.h"
 
-NetworkManager::NetworkManager()
-	: clientArr()
+NetworkManager::NetworkManager(const int controlledClientIndex)
+	: connectedClientCount(0)
+	, clientArr()
 	, clientArrLock()
-	, connectedClientCount(0)
+	, controlledClient()
+	, controlledClientKey(controlledClientIndex)
+	, isFindControlledClient(true)
+	// , isFindControlledClient(false)
 	, workerThreadArr()
 	, hIOCP()
 	, sendMemoryPool()
@@ -20,6 +24,10 @@ NetworkManager::NetworkManager()
 	}
 
 	sendMemoryPool = std::make_unique<SendMemoryPool>();
+	controlledClient = std::make_shared<_ClientType>(controlledClientKey); // 해당 키값 의미없음.
+
+	controlledClient->posX = 400; //-100; // 최초에 안그려지게 설정
+	controlledClient->posY = 400; //-100; // 최초에 안그려지게 설정
 
 	InitNetwork();
 }

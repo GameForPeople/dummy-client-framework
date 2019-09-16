@@ -118,7 +118,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			//PUT_OBJECT에서 검사 후 설정하도록 변경.
 			//if(packet->key == pClient->key) pClient->isLogin = true;
 			pClient->key = packet->key;
-			std::cout << "KEY - "<< pClient->key << "\n";
+			//std::cout << "KEY - "<< pClient->key << "\n";
 
 			if (pClient->isLogin == false)
 			{
@@ -150,12 +150,14 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 
 			if (packet->key == pClient->key)
 			{
-				std::cout << pClient->key << " -  x : " << pClient->posX << " , Y : " << pClient->posY << "\n";
+				//std::cout << pClient->key << " -  x : " << pClient->posX << " , Y : " << pClient->posY << "\n";
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
 			}
-			else if(packet->key == controlledMainClientKey)
+			// 동기화 측면에서 문제가 발생할 수 있는데, 치명적이지 않기 때문에 무시합니다.
+			else if(packet->key == controlledClientKey)
 			{
+				isFindControlledClient = true;
 				controlledClient->posX = packet->posX;
 				controlledClient->posY = packet->posY;
 			}

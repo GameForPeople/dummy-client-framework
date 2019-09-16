@@ -9,7 +9,7 @@ class NetworkManager
 {
 	friend class DummyClientFramework;
 public:
-	NetworkManager();
+	NetworkManager(const int controlledClientIndex);
 	~NetworkManager();
 
 private:
@@ -33,9 +33,13 @@ private:
 	void ProcessEncode_CUSTOM(SendMemoryUnit* pClient);
 
 private:
+	std::atomic<_ClientIndexType> connectedClientCount;
 	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>	clientArr;
 	std::shared_mutex clientArrLock;
-	std::atomic<_ClientIndexType> connectedClientCount;
+
+	std::shared_ptr<_ClientType> controlledClient;
+	/*_ClientIndexType*/ int controlledClientKey;	// atomic
+	bool isFindControlledClient;
 
 	std::array<std::thread, FRAMEWORK::WORKER_THREAD_COUNT> workerThreadArr;
 
@@ -44,5 +48,9 @@ private:
 	HANDLE hIOCP;
 
 public:
-	_NODISCARD _ClientIndexType GetConnectedClientCount() const noexcept { return connectedClientCount.load(); };
+	/*_NODISCARD */ inline _ClientIndexType GetConnectedClientCount() const noexcept { return connectedClientCount.load(); };
+
+	inline bool GetIsFindControlledClient() const noexcept { return isFindControlledClient; };
+	inline std::pair<_PosType, _PosType> GetControlledClientPosition() const noexcept { return std::make_pair(controlledClient->posX, controlledClient->posY); };
+	inline void SetControlledMainClientKey(const _ClientIndexType inClientIndex) noexcept { controlledClientKey = inClientIndex; };
 };
