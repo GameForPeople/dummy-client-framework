@@ -40,13 +40,13 @@ namespace GAME
 	constexpr static int ZONE_MIN_X = 0;	// 테스트 하는 서버 Zone의 X 최저값 좌표입니다.
 	constexpr static int ZONE_MIN_Y = 0;	// 테스트 하는 서버 Zone의 Y 최저값 좌표입니다.
 
-	constexpr static int ZONE_MAX_X = 8000;	// 테스트 하는 서버 Zone의 X 최대값 좌표입니다.
-	constexpr static int ZONE_MAX_Y = 8000;	// 테스트 하는 서버 Zone의 Y 최대값 좌표입니다.
+	constexpr static int ZONE_MAX_X = 300;	// 테스트 하는 서버 Zone의 X 최대값 좌표입니다.
+	constexpr static int ZONE_MAX_Y = 300;	// 테스트 하는 서버 Zone의 Y 최대값 좌표입니다.
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
-	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +1;
-	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +1;
+	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +10;
+	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ +10;
 }
 
 namespace NETWORK
@@ -148,11 +148,14 @@ namespace PACKET_EXAMPLE
 				MOVE = 0,
 				LOGIN = 1,
 				SIGN_UP = 2,
+				ATTACK = 3,
+				USE_ITEM = 4,
 				ENUM_SIZE
 			};
 		}
 	}
 
+#pragma pack (push, 1)
 	namespace DATA
 	{
 		struct BasePacket
@@ -168,7 +171,7 @@ namespace PACKET_EXAMPLE
 			struct LoginTrue : public BasePacket
 			{
 				const _ClientIndexType key;
-				char pb[40];
+				char paddingBuffer[40];
 
 				LoginTrue(const _ClientIndexType key) noexcept;
 			};
@@ -179,7 +182,7 @@ namespace PACKET_EXAMPLE
 				const _PosType posX;
 				const _PosType posY;
 
-				unsigned int pB0;
+				unsigned int paddingBuffer;
 
 				PutObject(const _ClientIndexType key, const _PosType posX, const _PosType posY) noexcept;
 			};
@@ -217,7 +220,15 @@ namespace PACKET_EXAMPLE
 
 				SignUp(const _IDType* const pInNickname) noexcept;
 			};
+
+			struct Attack : public BasePacket 
+			{
+				unsigned char attackType;							//0이면 기본공격, 1이면 스킬1, 2이면 스킬2
+
+				Attack(const unsigned char InAttackType ) noexcept;
+			};
 		}
 	}
+#pragma pack(pop)
 }
 

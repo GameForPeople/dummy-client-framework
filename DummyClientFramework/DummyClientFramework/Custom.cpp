@@ -118,11 +118,11 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			//PUT_OBJECT에서 검사 후 설정하도록 변경.
 			//if(packet->key == pClient->key) pClient->isLogin = true;
 			pClient->key = packet->key;
+			std::cout << "KEY - "<< pClient->key << "\n";
 
 			if (pClient->isLogin == false)
 			{
 				pClient->isLogin = true;
-				std::cout << "LOGIN TRUE! :: " << pClient->index << std::endl;
 			}
 		}
 		break;
@@ -138,6 +138,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			// 자신 말고, 다른 플레이어에 대한 PutObject는 무시.
 			if (packet->key == pClient->key)
 			{
+				//std::cout << pClient->key << " -  x : " << pClient->posX << " , Y : " << pClient->posY << "\n";
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
 			}
@@ -149,8 +150,14 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 
 			if (packet->key == pClient->key)
 			{
+				std::cout << pClient->key << " -  x : " << pClient->posX << " , Y : " << pClient->posY << "\n";
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
+			}
+			else if(packet->key == controlledMainClientKey)
+			{
+				controlledClient->posX = packet->posX;
+				controlledClient->posY = packet->posY;
 			}
 		}
 		break;
@@ -209,12 +216,14 @@ namespace PACKET_EXAMPLE::DATA
 		LoginTrue::LoginTrue(const _ClientIndexType key) noexcept
 			: BasePacket(sizeof(LoginTrue), PACKET_EXAMPLE::TYPE::SERVER_TO_CLIENT::LOGIN_TRUE)
 			, key(key)
+			, paddingBuffer()
 		{}
 
 		PutObject::PutObject(const _ClientIndexType key, const _PosType posX, const _PosType posY) noexcept
 			: BasePacket(sizeof(PutObject), PACKET_EXAMPLE::TYPE::SERVER_TO_CLIENT::PUT_OBJECT)
 			, key(key)
 			, posX(posX), posY(posY)
+			, paddingBuffer()
 		{}
 
 		Position::Position(const _ClientIndexType key, const _PosType posX, const _PosType posY) noexcept
@@ -243,6 +252,12 @@ namespace PACKET_EXAMPLE::DATA
 			, id()
 		{
 			lstrcpynW(id, pInId, FRAMEWORK::MAX_ID_LENGTH);
+		}
+
+		Attack::Attack(const unsigned char InAttackType) noexcept
+			: BasePacket(sizeof(Attack), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::ATTACK)
+			, attackType(InAttackType)
+		{
 		}
 	}
 }
