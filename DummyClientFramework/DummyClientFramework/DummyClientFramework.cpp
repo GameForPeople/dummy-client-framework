@@ -40,8 +40,14 @@ void DummyClientFramework::Draw(HDC hdc)
 {
 	int tempCount{ 0 };
 	int zeroPosCount{ 0 };
-	//networkManager->clientArrLock.lock_shared();	// +++++++++++++++++++ 1
-	for (auto& pClient : networkManager->clientArr)
+
+	NetworkManager::_ClientArrType tempClientArr;
+	{
+		std::shared_lock<std::shared_mutex> tempSharedLock(networkManager->clientArrLock);
+		tempClientArr = networkManager->clientArr;
+	}
+
+	for (auto& pClient : tempClientArr)
 	{
 		if (pClient->isLogin)
 		{
@@ -51,7 +57,6 @@ void DummyClientFramework::Draw(HDC hdc)
 			Rectangle(hdc, tempX - GAME::ACTOR_X_SIZE, tempY - GAME::ACTOR_Y_SIZE, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
 		}
 	}
-	//networkManager->clientArrLock.unlock_shared(); // -------------------- 0
 	
 	if (networkManager->GetIsFindControlledClient())
 	{

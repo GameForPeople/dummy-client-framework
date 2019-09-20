@@ -34,7 +34,10 @@ private:
 
 private:
 	std::atomic<_ClientIndexType> connectedClientCount;
-	std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>	clientArr;
+
+	using _ClientArrType = std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>;
+	_ClientArrType	clientArr;
+
 	std::shared_mutex clientArrLock;
 
 	std::shared_ptr<_ClientType> controlledClient;
@@ -42,7 +45,6 @@ private:
 	bool isFindControlledClient;
 
 	std::array<std::thread, FRAMEWORK::WORKER_THREAD_COUNT> workerThreadArr;
-
 	std::unique_ptr<SendMemoryPool>	sendMemoryPool;
 
 	HANDLE hIOCP;
