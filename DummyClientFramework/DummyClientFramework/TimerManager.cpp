@@ -50,14 +50,15 @@ void TimerManager::TimerThread()
 
 	while (timerCont.size())
 	{
-		TimerUnit* retTimerUnit;
+		TimerUnit* retTimerUnit{ nullptr };
 		while (!timerCont.try_pop(retTimerUnit))
 		{
 		}
 
 		if (tempNowTime < retTimerUnit->eventTime)
 		{
-			PushTimerUnit(retTimerUnit);
+			//PushTimerUnit(retTimerUnit);
+			timerCont.push(retTimerUnit);
 			break;
 		}
 		
