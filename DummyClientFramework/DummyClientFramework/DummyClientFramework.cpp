@@ -10,12 +10,16 @@ DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/
 	, networkManager()
 {
 	TestIntegrity();
+#ifdef WONSY_LOG_MANAGER
 	LogManager::MakeInstance();
+#endif
 }
 
 DummyClientFramework::~DummyClientFramework()
 {
+#ifdef WONSY_LOG_MANAGER
 	LogManager::GetInstance()->DeleteInstance();
+#endif
 }
 
 void DummyClientFramework::Create(HWND hWnd)
@@ -29,10 +33,12 @@ void DummyClientFramework::Create(HWND hWnd)
 
 	networkManager = std::make_unique<NetworkManager>(tempUniqueKey);
 
+#ifdef WONSY_LOG_MANAGER
 #ifdef DEFAULT_TEST_MODE
 	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"DEFAULT_TEST_MODE 더미 클라이언트가 정상적으로 실행되었습니다.");
 #elif HOTSPOT_TEST_MODE
 	LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"HOTSPOT_TEST_MODE 더미 클라이언트가 정상적으로 실행되었습니다.");
+#endif
 #endif
 }
 
@@ -105,16 +111,14 @@ void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 	switch (iMessage)
 	{
-	case WM_KEYDOWN:
-	{
-		if (wParam == VK_P) {}
-		if (wParam == VK_Q) { SendMessage(hWnd, WM_DESTROY, 0, 0); return; }
-	}
-	break;
+		case WM_KEYDOWN:
+		{
+			if (wParam == VK_P) {}
+			if (wParam == VK_Q) { SendMessage(hWnd, WM_DESTROY, 0, 0); return; }
+		} break;
 
-	case WM_KEYUP:
-	{
-	}
-	break;
+		case WM_KEYUP:
+		{
+		} break;
 	}
 }

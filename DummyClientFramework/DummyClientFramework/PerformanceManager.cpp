@@ -2,8 +2,7 @@
 
 #include "PerformanceManager.h"
 
-//PerformanceManager* PerformanceManager::instance = nullptr;
-
+#ifdef WONSY_PERFORMANCE_MANAGER
 PerformanceUnit::PerformanceUnit(const FUNCTION_NAME inFuntionName)
 	: function(inFuntionName)
 	, startTime(std::chrono::high_resolution_clock::now())
@@ -54,4 +53,5 @@ PerformanceManager::_ResultContType& PerformanceManager::GetResultCont()
 {
 	return resultCont;
 }
+#endif
 

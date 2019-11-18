@@ -14,8 +14,7 @@ BaseMemoryUnit::BaseMemoryUnit(const bool isRecv)
 	, overlapped()
 	, wsaBuf()
 {
-	if (isRecv == true)
-		wsaBuf.len = NETWORK::MAX_RECV_SIZE;
+	if (isRecv == true) { wsaBuf.len = NETWORK::MAX_RECV_SIZE; }
 }
 
 BaseMemoryUnit::~BaseMemoryUnit()
@@ -35,6 +34,8 @@ SendMemoryUnit::SendMemoryUnit()
 SendMemoryUnit::~SendMemoryUnit()
 {
 }
+
+#pragma endregion
 
 //--------------------------------------
 // Client Info
@@ -60,7 +61,6 @@ ClientInfo::~ClientInfo()
 {
 }
 
-#pragma endregion
 
 //--------------------------------------
 // Test Integrity
@@ -93,18 +93,18 @@ void DummyClientFramework::TestIntegrity()
 // EXAMPLE
 //--------------------------------------
 
-void NetworkManager::ProcessConnect_CUSTOM(_ClientType * pClient)
+void NetworkManager::ProcessConnect_CUSTOM(_DO_NOT_DELETE _ClientType * pClient)
 {
 #ifdef LOGIN_MODE
 	PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Login packet(std::to_wstring(pClient->index).c_str());
-	SendPacket(pClient, reinterpret_cast<char*>(&packet));
 #elif SIGNUP_MODE
 	PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::SignUp packet(std::to_wstring(pClient->index).c_str());
-	SendPacket(pClient, reinterpret_cast<char*>(&packet));
 #endif
+
+	SendPacket(pClient, reinterpret_cast<char*>(&packet));
 }
 
-void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
+void NetworkManager::ProcessPacket_CUSTOM(_DO_NOT_DELETE _ClientType * pClient)
 {
 	using namespace PACKET_EXAMPLE::TYPE::SERVER_TO_CLIENT;
 	using namespace PACKET_EXAMPLE::DATA::SERVER_TO_CLIENT;
@@ -120,17 +120,12 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 			pClient->key = packet->key;
 			//std::cout << "KEY - "<< pClient->key << "\n";
 
-			if (pClient->isLogin == false)
-			{
-				pClient->isLogin = true;
-			}
-		}
-		break;
+			if (pClient->isLogin == false) { pClient->isLogin = true; }
+		} break;
 	case LOGIN_FAIL:
 		{
 			std::cout << "LOGIN FAIL!\n";
-		}
-		break;
+		} break;
 	case PUT_OBJECT:
 		{
 			PutObject* packet = reinterpret_cast<PutObject*>(pClient->loadedBuf);
@@ -142,8 +137,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
 			}
-		}
-		break;
+		} break;
 	case POSITION:
 		{
 			Position* packet = reinterpret_cast<Position*>(pClient->loadedBuf);
@@ -161,8 +155,7 @@ void NetworkManager::ProcessPacket_CUSTOM(_ClientType * pClient)
 				controlledClient->posX = packet->posX;
 				controlledClient->posY = packet->posY;
 			}
-		}
-		break;
+		} break;
 	default: 
 		// 이 외의 패킷에 대해서는 무시합니다.
 		//std::cout << "unknown packet recved" << (int)(pClient->loadedBuf[1]) << std::endl;
@@ -176,9 +169,9 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	// NetworkManager::ConnectWithinMaxClient에 이미 정의되어 있으며,
 	// framework의 update 부분에서, 이 함수 전에 호출됩니다.
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
-	// 랜덤 4방향 하나 보내줍니다.
 	
-	for(auto pClient : clientArr)
+	// 랜덤 4방향 하나 보내줍니다.
+	for(const auto& pClient : clientArr)
 	{
 		if (pClient->isLogin)
 		{
@@ -188,23 +181,88 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	}
 }
 
-void NetworkManager::ProcessDecode_CUSTOM(_ClientType* pClient)
+void NetworkManager::ProcessDecode_CUSTOM(_DO_NOT_DELETE _ClientType* pClient)
 {
 	/*
 		해당 예제에서는 어떤 것도 하지 않습니다.
 	*/
 }
 
-void NetworkManager::ProcessEncode_CUSTOM(SendMemoryUnit* pClient)
+void NetworkManager::ProcessEncode_CUSTOM(_DO_NOT_DELETE SendMemoryUnit* pClient)
 {
 	/*
 		해당 예제에서는 어떤 것도 하지 않습니다.
 	*/
 }
 
-void TimerManager::ProcessTimerEvent_CUSTOM(TimerUnit* pTimerUnit)
+#ifdef WONSY_TIMER_MANAGER
+void TimerManager::ProcessTimerEvent_CUSTOM(_DO_NOT_DELETE TimerUnit* pTimerUnit)
 {
+	switch (pTimerUnit->timerType)
+	{
+		case TIMER_TYPE::AWAKE_TYPE:
+		{
+			switch (rand() % 4)
+			{
+				case 0:
+				{
+					TimerManager::GetInstance()->AddTimerEvent
+					(
+						TIMER_TYPE::ATTACK_TYPE,
+						pTimerUnit->ownerKey,
+						-1,
+						TIME::SECOND
+					);
+				} break;
+			
+				case 1:
+				{
+					TimerManager::GetInstance()->AddTimerEvent
+					(
+						TIMER_TYPE::SKILL_TYPE,
+						pTimerUnit->ownerKey,
+						-1,
+						TIME::SKILL
+					);
+				} break;
+
+				case 2:
+				{
+					TimerManager::GetInstance()->AddTimerEvent
+					(
+						TIMER_TYPE::USE_ITEM1_TYPE,
+						pTimerUnit->ownerKey,
+						-1,
+						TIME::ITEM1
+					);
+				} break;
+
+				case 3:
+				{
+					TimerManager::GetInstance()->AddTimerEvent
+					(
+						TIMER_TYPE::USE_ITEM2_TYPE,
+						pTimerUnit->ownerKey,
+						-1,
+						TIME::ITEM2
+					);
+				} break;
+			}
+		} break;
+
+		case TIMER_TYPE::ATTACK_TYPE:
+		{
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Attack packet(0);
+			SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
+		} break;
+
+		default:
+		{
+			assert(false, "뭐여");
+		} break;
+	}
 }
+#endif
 
 namespace PACKET_EXAMPLE::DATA
 {

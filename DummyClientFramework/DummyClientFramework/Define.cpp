@@ -3,7 +3,7 @@
 
 #include "LogManager.h"
 
-namespace ERROR_UTIL
+namespace WonSY::ERROR_UTIL
 {
 	_NORETURN void ERROR_QUIT(const WCHAR *msg)
 	{
@@ -18,7 +18,9 @@ namespace ERROR_UTIL
 			NULL
 		);
 
+#ifdef WONSY_LOG_MANAGER
 		LogManager::GetInstance()->AddLog(LOG_TYPE::ERROR_LOG, (LPTSTR)lpMsgBuf);
+#endif
 		MessageBox(NULL, (LPTSTR)lpMsgBuf, msg, MB_ICONERROR);
 		LocalFree(lpMsgBuf);
 		exit(1);
@@ -34,7 +36,9 @@ namespace ERROR_UTIL
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 			(LPTSTR)&lpMsgBuf, 0, NULL);
 
+#ifdef WONSY_LOG_MANAGER
 		LogManager::GetInstance()->AddLog(LOG_TYPE::WARNING_LOG, (WCHAR*)lpMsgBuf);
+#endif
 		wprintf(L"[%s] %s", msg, (WCHAR*)lpMsgBuf);
 		LocalFree(lpMsgBuf);
 	}
@@ -56,7 +60,7 @@ namespace ERROR_UTIL
 	};
 }
 
-namespace TIME_UTIL
+namespace WonSY::TIME_UTIL
 {
 	const std::string GetCurrentDateTime() {
 		time_t     now = time(0); //현재 시간을 time_t 타입으로 저장
@@ -69,15 +73,13 @@ namespace TIME_UTIL
 	}
 }
 
-namespace UNICODE_UTIL
+namespace WonSY::UNICODE_UTIL
 {
 	void SetLocaleForKorean()
 	{
 		_wsetlocale(LC_ALL, L"Korean");
 
-		// ? 계속 오류 내뱉어서 일단 꺼놓음.
-		//26444 왜 때문에, 굳이 필요 없이, L-Value를 만들어야하는가;
-		/*auto oldLocale = std::wcout.imbue(std::locale("koeran")); */
+		auto oldLocale = std::wcout.imbue(std::locale("korean"));
 	}
 
 	_NODISCARD std::string WStringToString(const std::wstring& InWString)

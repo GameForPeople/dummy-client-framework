@@ -2,6 +2,7 @@
 
 #include "TimerManager.h"
 
+#ifdef WONSY_TIMER_MANAGER
 //---------------------------------------------------------------------------
 // TimerUnit
 //---------------------------------------------------------------------------
@@ -97,3 +98,4 @@ void TimerManager::PushTimerUnit(TimerUnit* inTimerUnit)
 //{
 //	return &(timerCont[inTimerContIndex]);
 //}
+#endif

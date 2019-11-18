@@ -41,7 +41,7 @@ NetworkManager::~NetworkManager()
 			pClient->isConnect = false;
 			closesocket(pClient->socket);
 		}
-		
+
 		delete pClient;
 	}
 
@@ -57,7 +57,7 @@ void NetworkManager::InitNetwork()
 
 	// 2. 입출력 완료 포트 생성
 	if (hIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0)
-		; hIOCP == NULL) ERROR_UTIL:: ERROR_QUIT(TEXT("Make_WorkerThread()"));
+		; hIOCP == NULL) ERROR_UTIL::ERROR_QUIT(TEXT("Make_WorkerThread()"));
 
 	// 3. 워커 쓰레드 함수 할당.
 	for (auto& thread : workerThreadArr) thread = std::thread{ RunWorkerThread, (LPVOID)this };
@@ -114,7 +114,7 @@ void NetworkManager::SetRecv(const _ClientIndexType inClientIndex)
 
 void NetworkManager::LoadRecvData(_ClientType* pClient, int recvSize)
 {
-	char *pBuf = pClient->dataBuf; // pBuf -> 처리하는 문자열의 시작 위치
+	char* pBuf = pClient->dataBuf; // pBuf -> 처리하는 문자열의 시작 위치
 	char packetSize{ 0 }; // 처리해야할 패킷의 크기
 
 	// 이전에 처리를 마치지 못한 버퍼가 있다면, 지금 처리해야할 패킷 사이즈를 알려줘.
@@ -164,7 +164,7 @@ bool NetworkManager::ConnectWithinMaxClient()
 	{
 		// 0. 최대 클라이언트 수인지 체크.
 		if (_ClientIndexType nowClientIndex = GetConnectedClientCount();
-			nowClientIndex == FRAMEWORK::MAX_CLIENT) return true; 
+			nowClientIndex == FRAMEWORK::MAX_CLIENT) return true;
 		else
 		{
 			// 1. 해당 인덱스의 소켓 생성.
@@ -181,15 +181,15 @@ bool NetworkManager::ConnectWithinMaxClient()
 			serverAddr.sin_family = AF_INET;
 			serverAddr.sin_addr.s_addr = inet_addr(NETWORK::SERVER_IP.c_str());
 			serverAddr.sin_port = htons(NETWORK::SERVER_PORT);
-			
+
 			// 3. 커넥트!!!!!!!!! 가즈아아아아아앗!!!!!!!
-			if (int retVal = WSAConnect(clientArr[nowClientIndex]->socket, (SOCKADDR*)& serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL)
+			if (int retVal = WSAConnect(clientArr[nowClientIndex]->socket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL)
 				; retVal == SOCKET_ERROR)
 			{
 				ERROR_UTIL::ERROR_DISPLAY(L"connect()");
 				return false;
 			}
-			
+
 			// 4. 소켓과 입출력 완료 포트 연결.
 			CreateIoCompletionPort(reinterpret_cast<HANDLE>(clientArr[nowClientIndex]->socket), hIOCP, clientArr[nowClientIndex]->socket, 0);
 
@@ -204,7 +204,7 @@ bool NetworkManager::ConnectWithinMaxClient()
 
 			// 8. 접속한 클라이언트 수를 하나 증가시켜줌.
 			connectedClientCount.fetch_add(1);
-			
+
 			// 9. 딜레이.
 			std::this_thread::sleep_for(1ns);
 		}
@@ -218,11 +218,25 @@ void NetworkManager::SendPacket(const _ClientType* const pClient, const char* co
 	auto sendMemoryUnit = sendMemoryPool->PopMemory();
 	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
 	sendMemoryUnit->memoryUnit.wsaBuf.len = packetData[0];
-	
+
 	ProcessEncode_CUSTOM(sendMemoryUnit);
-	
+
 	DWORD flag{};
 	ZeroMemory(&sendMemoryUnit->memoryUnit.overlapped, sizeof(sendMemoryUnit->memoryUnit.overlapped));
 
 	WSASend(pClient->socket, &sendMemoryUnit->memoryUnit.wsaBuf, 1, NULL, 0, &sendMemoryUnit->memoryUnit.overlapped, NULL);
+}
+
+void NetworkManager::SendPacket(const int clientIndex, const char* const packetData)
+{
+	auto sendMemoryUnit = sendMemoryPool->PopMemory();
+	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
+	sendMemoryUnit->memoryUnit.wsaBuf.len = packetData[0];
+
+	ProcessEncode_CUSTOM(sendMemoryUnit);
+
+	DWORD flag{};
+	ZeroMemory(&sendMemoryUnit->memoryUnit.overlapped, sizeof(sendMemoryUnit->memoryUnit.overlapped));
+
+	WSASend(clientArr[clientIndex]->socket, &sendMemoryUnit->memoryUnit.wsaBuf, 1, NULL, 0, &sendMemoryUnit->memoryUnit.overlapped, NULL);
 }

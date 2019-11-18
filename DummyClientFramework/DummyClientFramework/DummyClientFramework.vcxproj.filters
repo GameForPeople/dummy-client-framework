@@ -17,14 +17,26 @@
     <Filter Include="Fixed\Fixed_Framework\NetworkManager">
       <UniqueIdentifier>{0e055a07-7270-4700-8ad9-facc3acd5ef6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fixed\Fixed_WinAPI\Others">
-      <UniqueIdentifier>{4dda4b6f-e166-4c16-b62c-59c4fe86ded0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fixed\Fixed_Framework\Define">
       <UniqueIdentifier>{0c6860c8-a59b-4eb4-bde5-e4a63130760b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Fixed\Fixed_Framework\Managers">
       <UniqueIdentifier>{4dc4503b-1a6c-4724-89d1-222d38e119f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Library">
+      <UniqueIdentifier>{1ee62e8c-732b-401c-85dd-cefbbfb6ad02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Managers\TimerManager">
+      <UniqueIdentifier>{104a0195-45e1-4a41-b88f-f296541b6738}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Managers\LogManager">
+      <UniqueIdentifier>{1277a120-6fbc-4e75-b93f-c00d1f319698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Managers\LogManager\PerformanceManager">
+      <UniqueIdentifier>{e6942ba8-101f-4cc2-bf26-73f7c0867579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Managers\RenderModelManager">
+      <UniqueIdentifier>{244bc56a-e5ac-417a-900c-c7db8e05de31}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,15 +47,6 @@
       <Filter>Fixed\Fixed_Framework</Filter>
     </ClInclude>
     <ClInclude Include="Custom.hh" />
-    <ClInclude Include="main.h">
-      <Filter>Fixed\Fixed_WinAPI</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Fixed\Fixed_WinAPI\Others</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Fixed\Fixed_WinAPI\Others</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Fixed\Fixed_Framework\Define</Filter>
     </ClInclude>
@@ -53,20 +56,32 @@
     <ClInclude Include="SendMemoryPool.h">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClInclude>
-    <ClInclude Include="RenderModelManager.h">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    <ClInclude Include="main.h">
+      <Filter>Fixed</Filter>
     </ClInclude>
-    <ClInclude Include="LogManager.h">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    <ClInclude Include="targetver.h">
+      <Filter>Fixed\Fixed_WinAPI</Filter>
     </ClInclude>
-    <ClInclude Include="PerformanceManager.h">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>Fixed\Fixed_WinAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="nameof.hpp">
+      <Filter>Fixed\Fixed_Framework\Library</Filter>
     </ClInclude>
     <ClInclude Include="magic_enum.hpp">
-      <Filter>Fixed\Fixed_Framework\Define</Filter>
+      <Filter>Fixed\Fixed_Framework\Library</Filter>
     </ClInclude>
     <ClInclude Include="TimerManager.h">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+      <Filter>Fixed\Fixed_Framework\Managers\TimerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="LogManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers\LogManager</Filter>
+    </ClInclude>
+    <ClInclude Include="PerformanceManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers\LogManager\PerformanceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderModelManager.h">
+      <Filter>Fixed\Fixed_Framework\Managers\RenderModelManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +92,6 @@
       <Filter>Fixed\Fixed_Framework</Filter>
     </ClCompile>
     <ClCompile Include="Custom.cpp" />
-    <ClCompile Include="main.cpp">
-      <Filter>Fixed\Fixed_WinAPI</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Fixed\Fixed_Framework\Define</Filter>
     </ClCompile>
@@ -89,17 +101,20 @@
     <ClCompile Include="SendMemoryPool.cpp">
       <Filter>Fixed\Fixed_Framework\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="RenderModelManager.cpp">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="LogManager.cpp">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="PerformanceManager.cpp">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Fixed</Filter>
     </ClCompile>
     <ClCompile Include="TimerManager.cpp">
-      <Filter>Fixed\Fixed_Framework\Managers</Filter>
+      <Filter>Fixed\Fixed_Framework\Managers\TimerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="LogManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers\LogManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PerformanceManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers\LogManager\PerformanceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderModelManager.cpp">
+      <Filter>Fixed\Fixed_Framework\Managers\RenderModelManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

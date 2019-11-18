@@ -2,11 +2,9 @@
 
 #include "LogManager.h"
 
+#ifdef WONSY_LOG_MANAGER
 #include "Define.h"
 #include "PerformanceManager.h"
-
-//LogManager* LogManager::instance = nullptr;
-//std::once_flag LogManager::instanceFlag;
 
 LogManager::LogManager()
 	: logFilePath("Log/DummyClientFramework_log_" + TIME_UTIL::GetCurrentDateTime() + ".txt")
@@ -78,7 +76,7 @@ void LogManager::SaveLog()
 	outFile << "===========================================";
 	outFile << "";
 
-#ifdef PERFORMANCE_LOG //Use PerformanceManager?
+#ifdef WONSY_PERFORMANCE_MANAGER //Use PerformanceManager?
 	assert(PerformanceManager::GetInstance() != nullptr, L"PerformanceManager를 LogManager이전에 제거하지 마세요!");
 	auto& resultCont = PerformanceManager::GetInstance()->GetResultCont();
 
@@ -122,3 +120,4 @@ void LogManager::SaveLog()
 
 	outFile.close();
 }
+#endif

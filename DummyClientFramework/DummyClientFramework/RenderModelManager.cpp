@@ -3,9 +3,7 @@
 #include "Custom.hh"
 #include "RenderModelManager.h"
 
-// Temp Deprecated
-
-/*
+#ifdef WONSY_RENDERMODEL_MANAGER
 //-----------------------------------------------------
 // BitModel
 //-----------------------------------------------------
@@ -39,4 +37,5 @@ void BitModel::Render(HDC pHDC, _PosType posX, _PosType posY)
 		tempY
 	);
 }
-*/
+#endif
+

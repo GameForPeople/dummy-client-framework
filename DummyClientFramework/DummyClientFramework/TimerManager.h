@@ -3,80 +3,75 @@
 #include "Define.h"
 #include "Custom.hh"
 
-struct TimerMemoryHead;
-/*
+//---
+#if USE_TIMER_MANAGER == 1
+#define WONSY_TIMER_MANAGER
+#endif
+//---
+
+#ifdef WONSY_TIMER_MANAGER
+namespace WonSY
+{
+	/*
 	TimerUnit
 		- 타이머에서 사용되는 메모리 단위입니다.
-*/
+	*/
 
-enum class TIME : /*unsigned short*/ _TimeType
-{
-	SECOND = 1000,
-	MINUTE = 60000,
-};
-
-enum class TIMER_TYPE : unsigned char
-{
-	NONE_TYPE,
-	NPC_MOVE,
-	NPC_ATTACK,
-
-	PUSH_OLD_KEY
-};
-
-struct TimerUnit
-{
-	TIMER_TYPE timerType;	
-	_TimeType eventTime;
-	_ClientIndexType ownerKey;	// 해당 타이머를 제작한 키.
-	_ClientIndexType targetKey; // 해당 타이머의 목적이 되는 키.
-	// std::any timerData;	// timerType에 따른 Data를 가짐.
-
-public:
-	TimerUnit() noexcept;
-	~TimerUnit();
-};
-
-struct TimerUnitCompareFunction 
-{
-	bool operator()(TimerUnit* left, TimerUnit* right) noexcept 
+	struct TimerUnit
 	{
-		return (left->eventTime) > (right->eventTime);
-	}
-};
+		TIMER_TYPE timerType;
+		_TimeType eventTime;
+		_ClientIndexType ownerKey;	// 해당 타이머를 제작한 키.
+		_ClientIndexType targetKey; // 해당 타이머의 목적이 되는 키.
+		// std::any timerData;	// timerType에 따른 Data를 가짐.
 
-class TimerManager /*: 싱글턴 */
-{
-public:
-	_NODISCARD static inline TimerManager* GetInstance() noexcept { return TimerManager::instance; };
+	public:
+		TimerUnit() noexcept;
+		~TimerUnit();
+	};
 
-	/*_NODISCARD*/ static void MakeInstance(HANDLE hIOCP) { TimerManager::instance = new TimerManager(hIOCP); };
+	struct TimerUnitCompareFunction
+	{
+		bool operator()(TimerUnit* left, TimerUnit* right) noexcept
+		{
+			return (left->eventTime) > (right->eventTime);
+		}
+	};
 
-	static void DeleteInstance() { delete instance; }
+	class TimerManager /*: 싱글턴 */
+	{
+	public:
+		_NODISCARD static inline TimerManager* GetInstance() noexcept { return TimerManager::instance; };
 
-public:
-	void TimerThread();
-	static DWORD WINAPI StartTimerThread();
-	void AddTimerEvent(const TIMER_TYPE, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime);
+		/*_NODISCARD*/ static void MakeInstance(HANDLE hIOCP) { TimerManager::instance = new TimerManager(hIOCP); };
 
-private:
-	void ProcessTimerEvent_CUSTOM(TimerUnit*);
-	
-	_NODISCARD TimerUnit* PopTimerUnit();
-	void PushTimerUnit(TimerUnit*);
+		static void DeleteInstance() { delete instance; }
 
-private:
-	HANDLE hIOCP;
-	static inline TimerManager* instance = nullptr;
+	public:
+		void TimerThread();
+		static DWORD WINAPI StartTimerThread();
+		void AddTimerEvent(const TIMER_TYPE, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime);
 
-	TimerManager(HANDLE hIOCP);
-	~TimerManager();
+	private:
+		void ProcessTimerEvent_CUSTOM(TimerUnit*);
 
-	_TimeType nowTime;	// 
-	
-	//std::vector<concurrency::concurrent_queue<TimerUnit*>> timerCont;
-	concurrency::concurrent_priority_queue<TimerUnit*, TimerUnitCompareFunction> timerCont;
-	concurrency::concurrent_queue<TimerUnit*> timerMemoryPool;
-public:
-	//concurrency::concurrent_queue<TimerUnit*>* GetTimerContWithIndex(const int inTimerContIndex);
-};
+		_NODISCARD TimerUnit* PopTimerUnit();
+		void PushTimerUnit(TimerUnit*);
+
+	private:
+		HANDLE hIOCP;
+		static inline TimerManager* instance = nullptr;
+
+		TimerManager(HANDLE hIOCP);
+		~TimerManager();
+
+		_TimeType nowTime;	// 
+
+		//std::vector<concurrency::concurrent_queue<TimerUnit*>> timerCont;
+		concurrency::concurrent_priority_queue<TimerUnit*, TimerUnitCompareFunction> timerCont;
+		concurrency::concurrent_queue<TimerUnit*> timerMemoryPool;
+	public:
+		//concurrency::concurrent_queue<TimerUnit*>* GetTimerContWithIndex(const int inTimerContIndex);
+	};
+}
+#endif

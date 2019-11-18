@@ -1,5 +1,4 @@
 ﻿// DummyClientFramework.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
-//
 
 #include "stdafx.h"
 #include "main.h"
@@ -187,11 +186,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRgn(hWnd, NULL, false);
 			break;
 		}
+
+#ifdef WONSY_LOG_MANAGER
 		LogManager::GetInstance()->AddLog(LOG_TYPE::ERROR_LOG, L"프레임워크 인스턴스가 nullptr입니다.");
+#endif
 		_FALLTHROUGH;
     case WM_DESTROY:
+#ifdef WONSY_LOG_MANAGER
 		LogManager::GetInstance()->AddLog(LOG_TYPE::DEV_LOG, L"프레임워크를 종료합니다.");
 		LogManager::DeleteInstance();
+#endif
+
 		KillTimer(hWnd, WINDOW::MAIN_TIMER_INDEX);
         PostQuitMessage(0);
         break;

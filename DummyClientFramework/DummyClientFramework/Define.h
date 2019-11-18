@@ -1,7 +1,6 @@
 #pragma once
 
-// FIXED
-namespace KEY
+namespace WonSY::KEY
 {
 	enum {
 		VK_0 = 48,
@@ -43,8 +42,8 @@ namespace KEY
 	};
 }
 
-// FIXED
-namespace ERROR_UTIL
+// UtilS
+namespace WonSY::ERROR_UTIL
 {
 	_NORETURN void ERROR_QUIT(const WCHAR *msg);
 	void ERROR_DISPLAY(const WCHAR *msg);
@@ -52,23 +51,25 @@ namespace ERROR_UTIL
 	void HandleSendError();
 }
 
-// FIXED
-namespace TIME_UTIL
+namespace WonSY::TIME_UTIL
 {
 	const std::string GetCurrentDateTime();
 }
 
-// FIXED
-namespace ATOMIC_UTIL {
-	template <class TYPE>
-	bool T_CAS(std::atomic<TYPE> *addr, TYPE inOldValue, TYPE inNewValue)
+namespace WonSY::ATOMIC_UTIL
+{
+	template <class TYPE> bool T_CAS(std::atomic<TYPE>* addr, TYPE oldValue, TYPE newValue) noexcept
 	{
-		return atomic_compare_exchange_strong(addr, &inOldValue, inNewValue);
-	}
+		return atomic_compare_exchange_strong(addr, &oldValue, newValue);
+	};
+
+	template <class TYPE> bool T_CAS(volatile TYPE* addr, TYPE oldValue, TYPE newValue) noexcept
+	{
+		return atomic_compare_exchange_strong(reinterpret_cast<volatile std::atomic<TYPE>*>(addr), &oldValue, newValue);
+	};
 }
 
-// FIXED
-namespace UNICODE_UTIL
+namespace WonSY::UNICODE_UTIL
 {
 	void SetLocaleForKorean();
 

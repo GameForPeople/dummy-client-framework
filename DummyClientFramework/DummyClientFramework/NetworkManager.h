@@ -24,6 +24,7 @@ private:
 	void LoadRecvData(_ClientType* pClient, int restSize);
 
 	void SendPacket(const _ClientType* const pClient, const char* const packetData);
+	void SendPacket(const int clientIndex, const char* const packetData);
 
 private:
 	void ProcessConnect_CUSTOM(_ClientType * pClient);
@@ -37,7 +38,6 @@ private:
 
 	using _ClientArrType = std::array<_ClientType*, FRAMEWORK::MAX_CLIENT>;
 	_ClientArrType	clientArr;
-
 	std::shared_mutex clientArrLock;
 
 	std::shared_ptr<_ClientType> controlledClient;

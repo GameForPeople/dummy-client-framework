@@ -1,16 +1,28 @@
 #pragma once
 
-#define DEFAULT_TEST_MODE	// 디폴트 테스트 모드.
+#pragma region [더미 클라이언트 정의]
 
-#ifndef DEFAULT_TEST_MODE
-#define HOTSPOT_TEST_MODE	 // 핫 스팟 테스트 모드. 
+#define DUMMY_CLIENT_TEST_MODE 0 // 0 이면 디폴트 테스트 모드, 1이면 핫스팟 테스트 모드
+#define DUMMY_CLIENT_SIGN_MODE 0 // 0 이면 로그인 처리, 1이면 계정 생성 처리
+
+#if DUMMY_CLIENT_TEST_MODE == 0
+	#define DEFAULT_TEST_MODE 
+#else
+	#define HOTSPOT_TEST_MODE	 // 핫 스팟 테스트 모드. 
 #endif
 
-#define LOGIN_MODE	// 계정 로그인
-
-#ifndef LOGIN_MODE
-#define SIGNUP_MODE // 계정 생성
+#if DUMMY_CLIENT_SIGN_MODE == 0
+	#define LOGIN_MODE   // 계정 로그인 모드
+#else
+	#define SIGNUP_MODE	 // 계정 생성 모드
 #endif
+
+#define USE_TIMER_MANAGER 1
+#define USE_LOG_MANAGER	0	// 현재 정상적으로 동작하지 않습니다.
+#define USE_PERFORMANCE_MANAGER 0 // 현재 동작하지 않습니다.
+#define USE_RENDERMODEL_MANAGER 0 // 현재 동작하지 않습니다.
+
+#pragma endregion
 
 namespace WINDOW
 {
@@ -28,7 +40,7 @@ namespace FRAMEWORK
 	constexpr static int CONNECTED_CLIENT_COUNT_IN_ONE_FRAME = 10; // Max Client까지 커넥트 하는 중일 떄, 한 틱에 커넥트 시도할 클라이언트 수.
 	
 	constexpr static int MAX_COUNT_MEMORY_UNIT_OF_SEND_POOL = 1000000;	// Send Memory Pool의 최초 할당 메모리 유닛 개수입니다.
-	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당합니다.
+	constexpr static int ALLOCATE_COUNT_MEMORY_UNIT_OF_SEND_POOL = 100000;	// Send Memory Pool의 try_pop가 실패하는 경우(메모리풀이 빔), 메모리풀에 메모리를 추가할당하는 사이즈입니다.
 
 	constexpr static int PRE_ALLOCATION_TIMER_UNIT_COUNT = 100000; // Timer Unit Pool의 사이즈!
 
@@ -45,8 +57,8 @@ namespace GAME
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
-	constexpr static int ACTOR_X_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ 5;
-	constexpr static int ACTOR_Y_SIZE = /*WINDOW::WINDOW_WIDTH / ZONE_X_SIZE*/ 5;
+	constexpr static int ACTOR_X_SIZE = ZONE_X_SIZE / 60;
+	constexpr static int ACTOR_Y_SIZE = ZONE_Y_SIZE / 60;
 }
 
 namespace NETWORK
@@ -69,6 +81,25 @@ namespace USING_DEFINE
 	using _IDType = wchar_t;
 
 }using namespace USING_DEFINE;
+
+enum class TIME : _TimeType
+{
+	  SECOND = 1000
+	, MINUTE = 60000
+	, ITEM1 = 2500
+	, ITEM2 = 5000
+	, SKILL = 1000
+};
+
+enum class TIMER_TYPE : unsigned char
+{
+	  NONE_TYPE	// 기본생성자.
+	, AWAKE_TYPE // 로그인 true 패킷 전달시 처리하게되는 인자.
+	, ATTACK_TYPE // 기본 공격
+	, SKILL_TYPE // 스킬 타입
+	, USE_ITEM1_TYPE // 아이템 타입
+	, USE_ITEM2_TYPE // 아이템 타입
+};
 
 namespace MEMORY 
 {
