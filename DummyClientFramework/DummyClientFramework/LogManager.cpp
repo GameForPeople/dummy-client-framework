@@ -12,7 +12,6 @@ LogManager::LogManager()
 	, saveFlag(true)
 {
 	//logCont.reserve(50);
-	UNICODE_UTIL::SetLocaleForKorean();
 }
 
 void LogManager::MakeInstance()

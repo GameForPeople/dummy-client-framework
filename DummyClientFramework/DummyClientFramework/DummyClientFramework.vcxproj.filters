@@ -38,6 +38,9 @@
     <Filter Include="Fixed\Fixed_Framework\Managers\RenderModelManager">
       <UniqueIdentifier>{244bc56a-e5ac-417a-900c-c7db8e05de31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fixed\Fixed_Framework\Container">
+      <UniqueIdentifier>{46c6e12c-8140-4489-a1e6-c108616fd5b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkManager.h">
@@ -127,6 +130,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="DummyClientFramework.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="wonsy.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

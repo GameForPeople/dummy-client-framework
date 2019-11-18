@@ -191,6 +191,7 @@
   <ItemGroup>
     <Image Include="DummyClientFramework.ico" />
     <Image Include="small.ico" />
+    <Image Include="wonsy.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.Hello" />

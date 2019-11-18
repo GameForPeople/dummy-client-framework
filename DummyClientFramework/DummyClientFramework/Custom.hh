@@ -72,8 +72,16 @@ namespace GAME
 
 	constexpr static int ZONE_X_SIZE = ZONE_MAX_X - ZONE_MIN_X;	// 
 	constexpr static int ZONE_Y_SIZE = ZONE_MAX_Y - ZONE_MIN_Y; // 
-	constexpr static int ACTOR_X_SIZE = ZONE_X_SIZE / 60;
-	constexpr static int ACTOR_Y_SIZE = ZONE_Y_SIZE / 60;
+	constexpr static int ACTOR_X_SIZE = 1500 / ZONE_X_SIZE;
+	constexpr static int ACTOR_Y_SIZE = 1500 / ZONE_Y_SIZE;
+
+#if USE_CONTROLLED_CLIENT == __ON
+	constexpr static int BROADCAST_X_SIZE = 10;	// USE_CONTROLLED_CLIENT의 시야 X입니다.
+	constexpr static int BROADCAST_Y_SIZE = 10; // USE_CONTROLLED_CLIENT의 시야 Y입니다.
+
+	constexpr static int BROADCAST_X_RENDER_SIZE = ACTOR_X_SIZE * BROADCAST_X_SIZE / 2;
+	constexpr static int BROADCAST_Y_RENDER_SIZE = ACTOR_Y_SIZE * BROADCAST_Y_SIZE / 2;
+#endif
 }
 
 namespace USING_DEFINE

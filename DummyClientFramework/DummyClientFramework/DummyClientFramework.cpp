@@ -30,13 +30,22 @@ void DummyClientFramework::Create(HWND hWnd)
 {
 	this->hWnd = hWnd;
 
+	printf("github.com/GameForPeople/dummy-client-framework \n");
+	printf("\n■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	printf("■ Dummy Client Framework ver 1.1 \n");
+	printf("■		원성연 (KoreaGameMaker@gmail.com)\n");
+	printf("■\n");
+	printf("■ IP : %s \n", NETWORK::SERVER_IP.c_str());
+	printf("■ Server Listen Port : %d \n", NETWORK::SERVER_PORT);
+	printf("■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+
+	UNICODE_UTIL::SetLocaleForKorean();
+
 	int tempUniqueKey{ - 1};
 #if USE_CONTROLLED_CLIENT == __ON
-	std::cout << "\n 추적하길 희망하는 Client의 UniqueKey값을 입력해주세요(없으면 -1) :  ";
-
-	std::cin >> tempUniqueKey;
+	std::wcout << L"\n CONTROLLED_CLIENT의 UniqueKey값을 입력해주세요 (없으면 -1) :  ";
+	std::wcin >> tempUniqueKey;
 #endif
-
 	//networkManager = std::make_unique<NetworkManager>(tempUniqueKey);
 	networkManager = new NetworkManager(tempUniqueKey);
 
@@ -75,6 +84,27 @@ void DummyClientFramework::Draw(HDC hdc)
 	//	}
 	//}
 
+#if USE_CONTROLLED_CLIENT == __ON
+	if (networkManager->GetIsFindControlledClient())
+	{
+		HBRUSH	broadcastBrush, oldBrush;
+
+		broadcastBrush = CreateSolidBrush(RGB(100, 100, 100));
+		oldBrush = (HBRUSH)SelectObject(hdc, broadcastBrush);
+
+		auto [posX, posY] = networkManager->GetControlledClientPosition();
+
+		posX = static_cast<_PosType>((posX - GAME::ZONE_MIN_X) * ((static_cast<float>(WINDOW::WINDOW_WIDTH) / GAME::ZONE_X_SIZE)));
+		posY = static_cast<_PosType>((posY - GAME::ZONE_MIN_Y) * ((static_cast<float>(WINDOW::WINDOW_HEIGHT) / GAME::ZONE_Y_SIZE)));
+
+		Rectangle(hdc, posX - GAME::BROADCAST_X_RENDER_SIZE, posY - GAME::BROADCAST_Y_RENDER_SIZE,
+			posX + GAME::BROADCAST_X_RENDER_SIZE, posY + GAME::BROADCAST_Y_RENDER_SIZE);
+
+		SelectObject(hdc, oldBrush);
+		DeleteObject(broadcastBrush);
+	}
+#endif
+
 	for (const auto& pClient : networkManager->clientArr)
 	{
 		if (pClient->isLogin)
@@ -91,7 +121,7 @@ void DummyClientFramework::Draw(HDC hdc)
 	{
 		HBRUSH	redBrush, oldBrush;
 		
-		redBrush = CreateSolidBrush ( RGB ( 255, 0, 0 ) );
+		redBrush = CreateSolidBrush (RGB ( 255, 0, 0 ));
 		oldBrush = (HBRUSH)SelectObject ( hdc, redBrush);
 		
 		auto [posX, posY] = networkManager->GetControlledClientPosition();
@@ -118,15 +148,17 @@ bool DummyClientFramework::Update()
 {
 	if (networkManager->ConnectWithinMaxClient())
 	{
-		std::cout << networkManager->GetConnectedClientCount() << "\n";
-		networkManager->ProcessUpdate_CUSTOM();
-		return true;
+		// std::cout << "Connected Client Count :"<< networkManager->GetConnectedClientCount() << "\n";
+		// return true;
 	}
 	else
 	{
-		std::cout << "Max Client! \n";
-		return false;
+		// std::cout << "Connected Client Count : MAX - " << networkManager->GetConnectedClientCount() << "\n";
+		// return false;
 	}
+	
+	networkManager->ProcessUpdate_CUSTOM();
+	return true;
 }
 
 void DummyClientFramework::InputKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
