@@ -3,15 +3,22 @@ GameServer Dummy Client Framework For TCP/IP Socket Server
 
 ![TitleImg](./DummyClientFramework/ReadmeResource/IMG_DummyClient.png)
 
-현재 작업중인 저장소로, 기능적인 측면에서 더미클라언트는 정상 동작하며 빌드에는 이상없으나, 
-내부 코드 중 일부 함수들(LogManager, PerformanceManager)이 미동작합니다.
+> 해당 프로젝트는 MMORPG 게임 서버의 간단한 Dummy Client ( Test Server, Stress Client ) 입니다.
+>
+> Custom.hh, Custom.cpp 만 서버에 맞게 수정하시면, 사용하실 수 있는 테스트 클라이언트입니다.
+>
+> 공부 목적의 프로젝트로, 해당 프로그램이 비정상적으로 동작할 수 있습니다.
+>
+> 감사합니다.
 
-감사합니다.
+## 📋 History
+### Pre-Ver 0.1 (2019-09-10)
+  - 단순 Dummy Client 기능 구현
 
-#### History
- 190910
-  - 기능 문제 수정 완료
-  - 렌더, 로그, 퍼포먼스 매니 추가 작업 필요
-
-Thanks :)
+### Release 1.1 (2019-11-19)
+  - Controlled Client Broadcast 구현 ( + Broadcast Region Draw)
+  - Timer Event Manger 구현
+  - Icon, UI, ReadMe.Hello 등 변경 
+  
+## 👍 Thanks to :)
   - [강수빈](https://github.com/Lyricia)
