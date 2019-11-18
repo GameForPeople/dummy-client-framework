@@ -24,6 +24,8 @@ private:
 	void LoadRecvData(_ClientType* pClient, int restSize);
 
 	void SendPacket(const _ClientType* const pClient, const char* const packetData);
+
+public:
 	void SendPacket(const int clientIndex, const char* const packetData);
 
 private:
@@ -40,9 +42,6 @@ private:
 	_ClientArrType	clientArr;
 	std::shared_mutex clientArrLock;
 
-	std::shared_ptr<_ClientType> controlledClient;
-	/*_ClientIndexType*/ int controlledClientKey;	// atomic
-	bool isFindControlledClient;
 
 	std::array<std::thread, FRAMEWORK::WORKER_THREAD_COUNT> workerThreadArr;
 	std::unique_ptr<SendMemoryPool>	sendMemoryPool;
@@ -52,7 +51,14 @@ private:
 public:
 	/*_NODISCARD */ inline _ClientIndexType GetConnectedClientCount() const noexcept { return connectedClientCount.load(); };
 
+#if USE_CONTROLLED_CLIENT == __ON
 	inline bool GetIsFindControlledClient() const noexcept { return isFindControlledClient; };
 	inline std::pair<_PosType, _PosType> GetControlledClientPosition() const noexcept { return std::make_pair(controlledClient->posX, controlledClient->posY); };
 	inline void SetControlledMainClientKey(const _ClientIndexType inClientIndex) noexcept { controlledClientKey = inClientIndex; };
+
+private:
+	std::shared_ptr<_ClientType> controlledClient;
+	/*_ClientIndexType*/ int controlledClientKey;	// atomic
+	bool isFindControlledClient;
+#endif
 };

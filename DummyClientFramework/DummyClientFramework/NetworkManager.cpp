@@ -8,9 +8,11 @@ NetworkManager::NetworkManager(const int controlledClientIndex)
 	: connectedClientCount(0)
 	, clientArr()
 	, clientArrLock()
+#if USE_CONTROLLED_CLIENT == __ON
 	, controlledClient()
 	, controlledClientKey(controlledClientIndex)
 	, isFindControlledClient(true)
+#endif
 	// , isFindControlledClient(false)
 	, workerThreadArr()
 	, hIOCP()
@@ -24,10 +26,13 @@ NetworkManager::NetworkManager(const int controlledClientIndex)
 	}
 
 	sendMemoryPool = std::make_unique<SendMemoryPool>();
-	controlledClient = std::make_shared<_ClientType>(controlledClientKey); // 해당 키값 의미없음.
 
+#if USE_CONTROLLED_CLIENT == __ON
+	controlledClient = std::make_shared<_ClientType>(controlledClientKey); // 해당 키값 의미없음.
+	
 	controlledClient->posX = 400; //-100; // 최초에 안그려지게 설정
 	controlledClient->posY = 400; //-100; // 최초에 안그려지게 설정
+#endif
 
 	InitNetwork();
 }
@@ -168,7 +173,7 @@ bool NetworkManager::ConnectWithinMaxClient()
 		else
 		{
 			// 1. 해당 인덱스의 소켓 생성.
-			if (clientArr[nowClientIndex]->socket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED)
+			if (clientArr[nowClientIndex]->socket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED)
 				; clientArr[nowClientIndex]->socket == INVALID_SOCKET)
 			{
 				ERROR_UTIL::ERROR_DISPLAY(L"Create_Socket()");
@@ -187,6 +192,7 @@ bool NetworkManager::ConnectWithinMaxClient()
 				; retVal == SOCKET_ERROR)
 			{
 				ERROR_UTIL::ERROR_DISPLAY(L"connect()");
+				throw ERROR;
 				return false;
 			}
 
@@ -229,14 +235,5 @@ void NetworkManager::SendPacket(const _ClientType* const pClient, const char* co
 
 void NetworkManager::SendPacket(const int clientIndex, const char* const packetData)
 {
-	auto sendMemoryUnit = sendMemoryPool->PopMemory();
-	memcpy(sendMemoryUnit->dataBuf, packetData, packetData[0]);
-	sendMemoryUnit->memoryUnit.wsaBuf.len = packetData[0];
-
-	ProcessEncode_CUSTOM(sendMemoryUnit);
-
-	DWORD flag{};
-	ZeroMemory(&sendMemoryUnit->memoryUnit.overlapped, sizeof(sendMemoryUnit->memoryUnit.overlapped));
-
-	WSASend(clientArr[clientIndex]->socket, &sendMemoryUnit->memoryUnit.wsaBuf, 1, NULL, 0, &sendMemoryUnit->memoryUnit.overlapped, NULL);
+	SendPacket(clientArr[clientIndex], packetData);
 }

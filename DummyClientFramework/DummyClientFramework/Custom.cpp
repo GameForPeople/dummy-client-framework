@@ -42,6 +42,7 @@ SendMemoryUnit::~SendMemoryUnit()
 //--------------------------------------
 
 ClientInfo::ClientInfo(const _ClientIndexType index)
+#pragma region [FIXED]
 	: memoryUnit(true)
 	, key()
 	, socket()
@@ -50,6 +51,7 @@ ClientInfo::ClientInfo(const _ClientIndexType index)
 	, loadedSize(0)
 	, dataBuf()
 	, isLogin(false)
+#pragma endregion
 	, posX(0)
 	, posY(0)
 	, index(index)
@@ -100,7 +102,6 @@ void NetworkManager::ProcessConnect_CUSTOM(_DO_NOT_DELETE _ClientType * pClient)
 #elif SIGNUP_MODE
 	PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::SignUp packet(std::to_wstring(pClient->index).c_str());
 #endif
-
 	SendPacket(pClient, reinterpret_cast<char*>(&packet));
 }
 
@@ -119,8 +120,31 @@ void NetworkManager::ProcessPacket_CUSTOM(_DO_NOT_DELETE _ClientType * pClient)
 			//if(packet->key == pClient->key) pClient->isLogin = true;
 			pClient->key = packet->key;
 			//std::cout << "KEY - "<< pClient->key << "\n";
+			
+			// 왠만하면 조건 true.
+			if (pClient->isLogin == false) 
+			{ 
+				pClient->isLogin = true; 
+			
+#ifdef HOTSPOT_TEST_MODE
+				_PosType tempX = rand() % 30; // Sector Size X
+				_PosType tempY = rand() % 30; // Sector Size Y
 
-			if (pClient->isLogin == false) { pClient->isLogin = true; }
+				PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Teleport packet(tempX, tempY); // Dir
+				SendPacket(pClient, reinterpret_cast<char*>(&packet));
+#endif
+
+#ifdef WONSY_TIMER_MANAGER
+				TimerManager::GetInstance()->AddTimerEvent
+				(
+					TIMER_TYPE::AWAKE_TYPE,
+					pClient->index,
+					-1, // 안씀
+					TIME::SECOND,
+					0	// 안씀
+				);
+#endif
+			}
 		} break;
 	case LOGIN_FAIL:
 		{
@@ -142,23 +166,23 @@ void NetworkManager::ProcessPacket_CUSTOM(_DO_NOT_DELETE _ClientType * pClient)
 		{
 			Position* packet = reinterpret_cast<Position*>(pClient->loadedBuf);
 
+			// 동기화 측면에서 문제가 발생할 수 있는데, 치명적이지 않기 때문에 무시합니다.
 			if (packet->key == pClient->key)
 			{
 				//std::cout << pClient->key << " -  x : " << pClient->posX << " , Y : " << pClient->posY << "\n";
 				pClient->posX = packet->posX;
 				pClient->posY = packet->posY;
 			}
-			// 동기화 측면에서 문제가 발생할 수 있는데, 치명적이지 않기 때문에 무시합니다.
+#if USE_CONTROLLED_CLIENT == __ON			
 			else if(packet->key == controlledClientKey)
 			{
 				isFindControlledClient = true;
 				controlledClient->posX = packet->posX;
 				controlledClient->posY = packet->posY;
 			}
+#endif
 		} break;
 	default: 
-		// 이 외의 패킷에 대해서는 무시합니다.
-		//std::cout << "unknown packet recved" << (int)(pClient->loadedBuf[1]) << std::endl;
 		break;
 	}
 }
@@ -170,12 +194,11 @@ void NetworkManager::ProcessUpdate_CUSTOM()
 	// framework의 update 부분에서, 이 함수 전에 호출됩니다.
 	// 따라서 업데이트마다 해야할 행위만 정의하면 됩니다.
 	
-	// 랜덤 4방향 하나 보내줍니다.
 	for(const auto& pClient : clientArr)
 	{
 		if (pClient->isLogin)
 		{
-			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4); // Dir
 			SendPacket(pClient, reinterpret_cast<char*>(&packet));
 		}
 	}
@@ -196,72 +219,101 @@ void NetworkManager::ProcessEncode_CUSTOM(_DO_NOT_DELETE SendMemoryUnit* pClient
 }
 
 #ifdef WONSY_TIMER_MANAGER
-void TimerManager::ProcessTimerEvent_CUSTOM(_DO_NOT_DELETE TimerUnit* pTimerUnit)
+void RandomAddEvent(_DO_NOT_DELETE TimerUnit* pTimerUnit)
+{
+	switch (rand() % 3)
+	{
+		case 0:
+		{
+			TimerManager::GetInstance()->AddTimerEvent
+			(
+				TIMER_TYPE::ATTACK_TYPE,
+				pTimerUnit->ownerKey,
+				-1, // 현재 클라이언트 - 타게팅 공격은 사용할 수 없습니다.
+				TIME::SECOND,
+				rand() % 5	// Attack index data
+			);
+		} break;
+
+		case 1:
+		{
+			TimerManager::GetInstance()->AddTimerEvent
+			(
+				TIMER_TYPE::SKILL_TYPE,
+				pTimerUnit->ownerKey,
+				-1,	// 현재 클라이언트 - 타게팅 스킬은 사용할 수 없습니다.
+				TIME::SKILL,
+				rand() % 5	// skill index data
+			);
+		} break;
+
+		case 2:
+		{
+			TimerManager::GetInstance()->AddTimerEvent
+			(
+				TIMER_TYPE::USE_ITEM_TYPE,
+				pTimerUnit->ownerKey,
+				-1, // 아이템은 타게팅 사용할 수 없습니다.
+				TIME::ITEM,
+				rand() % 5	// item index data
+			);
+		} break;
+	}
+}
+
+void WonSY::TimerManager::ProcessTimerEvent_CUSTOM(_DO_NOT_DELETE TimerUnit* pTimerUnit)
 {
 	switch (pTimerUnit->timerType)
 	{
+		// 해당 타입은 최초 1번 호출만을 보장합니다.
 		case TIMER_TYPE::AWAKE_TYPE:
 		{
-			switch (rand() % 4)
-			{
-				case 0:
-				{
-					TimerManager::GetInstance()->AddTimerEvent
-					(
-						TIMER_TYPE::ATTACK_TYPE,
-						pTimerUnit->ownerKey,
-						-1,
-						TIME::SECOND
-					);
-				} break;
-			
-				case 1:
-				{
-					TimerManager::GetInstance()->AddTimerEvent
-					(
-						TIMER_TYPE::SKILL_TYPE,
-						pTimerUnit->ownerKey,
-						-1,
-						TIME::SKILL
-					);
-				} break;
+			RandomAddEvent(pTimerUnit);
+		}break;
 
-				case 2:
-				{
-					TimerManager::GetInstance()->AddTimerEvent
-					(
-						TIMER_TYPE::USE_ITEM1_TYPE,
-						pTimerUnit->ownerKey,
-						-1,
-						TIME::ITEM1
-					);
-				} break;
+		case TIMER_TYPE::MOVE_TYPE:
+		{
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Move packet(rand() % 4);
+			networkManagerInstance.SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
 
-				case 3:
-				{
-					TimerManager::GetInstance()->AddTimerEvent
-					(
-						TIMER_TYPE::USE_ITEM2_TYPE,
-						pTimerUnit->ownerKey,
-						-1,
-						TIME::ITEM2
-					);
-				} break;
-			}
-		} break;
+			TimerManager::GetInstance()->AddTimerEvent
+			(
+				TIMER_TYPE::MOVE_TYPE,
+				pTimerUnit->ownerKey,
+				-1, // 현재 클라이언트 - 타게팅 공격은 사용할 수 없습니다.
+				TIME::SECOND,
+				rand() % 4	// Attack index data
+			);
+		}break;
 
 		case TIMER_TYPE::ATTACK_TYPE:
 		{
-			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Attack packet(0);
-			SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
-		} break;
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Attack packet(pTimerUnit->timerData);
+			networkManagerInstance.SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
+			RandomAddEvent(pTimerUnit);
+		}break;
+
+		case TIMER_TYPE::SKILL_TYPE:
+		{
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::Skill packet(pTimerUnit->timerData);
+			networkManagerInstance.SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
+			RandomAddEvent(pTimerUnit);
+		}break;
+
+		case TIMER_TYPE::USE_ITEM_TYPE:
+		{
+			PACKET_EXAMPLE::DATA::CLIENT_TO_SERVER::UseItem packet(pTimerUnit->timerData);
+			networkManagerInstance.SendPacket(pTimerUnit->ownerKey, reinterpret_cast<char*>(&packet));
+			RandomAddEvent(pTimerUnit);
+		}break;
 
 		default:
 		{
 			assert(false, "뭐여");
-		} break;
+		}break;
 	}
 }
+
 #endif
 
 namespace PACKET_EXAMPLE::DATA
@@ -317,6 +369,18 @@ namespace PACKET_EXAMPLE::DATA
 		Attack::Attack(const unsigned char InAttackType) noexcept
 			: BasePacket(sizeof(Attack), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::ATTACK)
 			, attackType(InAttackType)
+		{
+		}
+
+		Skill::Skill(const unsigned char InSkillType) noexcept
+			: BasePacket(sizeof(Skill), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::SKILL)
+			, skillType(InSkillType)
+		{
+		}
+
+		UseItem::UseItem(const unsigned char InItemType) noexcept
+			: BasePacket(sizeof(UseItem), PACKET_EXAMPLE::TYPE::CLIENT_TO_SERVER::USE_ITEM)
+			, itemType(InItemType)
 		{
 		}
 	}

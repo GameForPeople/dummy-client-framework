@@ -2,8 +2,9 @@
 
 #pragma region [더미 클라이언트 정의]
 
+
 #define DUMMY_CLIENT_TEST_MODE 0 // 0 이면 디폴트 테스트 모드, 1이면 핫스팟 테스트 모드
-#define DUMMY_CLIENT_SIGN_MODE 0 // 0 이면 로그인 처리, 1이면 계정 생성 처리
+#define DUMMY_CLIENT_SIGN_MODE 0 // 0 이면 최초 로그인 패킷, 1이면 계정 생성 요청 패킷
 
 #if DUMMY_CLIENT_TEST_MODE == 0
 	#define DEFAULT_TEST_MODE 
@@ -17,12 +18,26 @@
 	#define SIGNUP_MODE	 // 계정 생성 모드
 #endif
 
-#define USE_TIMER_MANAGER 1
-#define USE_LOG_MANAGER	0	// 현재 정상적으로 동작하지 않습니다.
-#define USE_PERFORMANCE_MANAGER 0 // 현재 동작하지 않습니다.
-#define USE_RENDERMODEL_MANAGER 0 // 현재 동작하지 않습니다.
+#define __ON 1
+#define __OFF 0
+
+#define USE_CONTROLLED_CLIENT	__ON
+
+#define USE_TIMER_MANAGER		__ON
+#define USE_LOG_MANAGER			__OFF // 현재 정상적으로 동작하지 않습니다.
+#define USE_PERFORMANCE_MANAGER __OFF // 현재 동작하지 않습니다.
+#define USE_RENDERMODEL_MANAGER __OFF // 현재 동작하지 않습니다.
 
 #pragma endregion
+
+namespace NETWORK
+{
+	const static std::string SERVER_IP = "127.0.0.1";
+	constexpr static unsigned short SERVER_PORT = 9000;
+	constexpr static int MAX_RECV_SIZE = 1000;	// 한번에 RECV가 가능한 최대 크기입니다.
+	constexpr static int MAX_SEND_SIZE = 127;	// 한번에 SEND가 가능한 최대 크기입니다. Send하는 프로토콜 - 패킷 중, sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
+	constexpr static int MAX_PACKET_SIZE = 127;	// Packet의 최대 크기입니다.  sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
+}
 
 namespace WINDOW
 {
@@ -61,15 +76,6 @@ namespace GAME
 	constexpr static int ACTOR_Y_SIZE = ZONE_Y_SIZE / 60;
 }
 
-namespace NETWORK
-{
-	const static std::string SERVER_IP = "127.0.0.1";
-	constexpr static unsigned short SERVER_PORT = 9000;
-	constexpr static int MAX_RECV_SIZE = 1000;	// 한번에 RECV가 가능한 최대 크기입니다.
-	constexpr static int MAX_SEND_SIZE = 127;	// 한번에 SEND가 가능한 최대 크기입니다. Send하는 프로토콜 - 패킷 중, sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
-	constexpr static int MAX_PACKET_SIZE = 127;	// Packet의 최대 크기입니다.  sizeof(char)보다 큰 사이즈의 패킷이 존재할 경우 해당 프레임워크를 사용할 수 없습니다.
-}
-
 namespace USING_DEFINE
 {
 	using _PosType = unsigned short;
@@ -78,6 +84,7 @@ namespace USING_DEFINE
 	using _PacketType = unsigned char;
 	using _DirectionType = unsigned char;
 	using _TimeType = unsigned long long;
+	using _TimeDataType = long long;
 	using _IDType = wchar_t;
 
 }using namespace USING_DEFINE;
@@ -86,9 +93,8 @@ enum class TIME : _TimeType
 {
 	  SECOND = 1000
 	, MINUTE = 60000
-	, ITEM1 = 2500
-	, ITEM2 = 5000
 	, SKILL = 1000
+	, ITEM = 2500
 };
 
 enum class TIMER_TYPE : unsigned char
@@ -97,8 +103,8 @@ enum class TIMER_TYPE : unsigned char
 	, AWAKE_TYPE // 로그인 true 패킷 전달시 처리하게되는 인자.
 	, ATTACK_TYPE // 기본 공격
 	, SKILL_TYPE // 스킬 타입
-	, USE_ITEM1_TYPE // 아이템 타입
-	, USE_ITEM2_TYPE // 아이템 타입
+	, USE_ITEM_TYPE // 아이템 타입
+	, MOVE_TYPE
 };
 
 namespace MEMORY 
@@ -180,7 +186,9 @@ namespace PACKET_EXAMPLE
 				LOGIN = 1,
 				SIGN_UP = 2,
 				ATTACK = 3,
-				USE_ITEM = 4,
+				SKILL = 4,
+				USE_ITEM = 5,
+				TELEPORT = 6,
 				ENUM_SIZE
 			};
 		}
@@ -257,6 +265,28 @@ namespace PACKET_EXAMPLE
 				unsigned char attackType;							//0이면 기본공격, 1이면 스킬1, 2이면 스킬2
 
 				Attack(const unsigned char InAttackType ) noexcept;
+			};
+
+			struct Skill : public BasePacket
+			{
+				unsigned char skillType;							//0이면 기본공격, 1이면 스킬1, 2이면 스킬2
+
+				Skill(const unsigned char InSkillType) noexcept;
+			};
+
+			struct UseItem : public BasePacket
+			{
+				unsigned char itemType;							//0이면 기본공격, 1이면 스킬1, 2이면 스킬2
+
+				UseItem(const unsigned char InItemType) noexcept;
+			};
+
+			struct Teleport : public BasePacket
+			{
+				const _PosType posX;							//0이면 기본공격, 1이면 스킬1, 2이면 스킬2
+				const _PosType posY;
+
+				Teleport(const _PosType posX, const _PosType posY) noexcept;
 			};
 		}
 	}

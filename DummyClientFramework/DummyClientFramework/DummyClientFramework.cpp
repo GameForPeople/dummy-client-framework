@@ -4,6 +4,7 @@
 
 #include "Define.h"
 #include "LogManager.h"
+#include "TimerManager.h"
 
 DummyClientFramework::DummyClientFramework(/*NetworkManager* pInNetworkManager*/)
 	: hWnd()
@@ -20,18 +21,28 @@ DummyClientFramework::~DummyClientFramework()
 #ifdef WONSY_LOG_MANAGER
 	LogManager::GetInstance()->DeleteInstance();
 #endif
+
+	TimerManager::DeleteInstance();
+	delete networkManager;
 }
 
 void DummyClientFramework::Create(HWND hWnd)
 {
 	this->hWnd = hWnd;
 
-	std::cout << "\n Client를 실행중이라면, 해당 Client의 UniqueKey 값을 입력해주세요(없으면 -1) :  ";
+	int tempUniqueKey{ - 1};
+#if USE_CONTROLLED_CLIENT == __ON
+	std::cout << "\n 추적하길 희망하는 Client의 UniqueKey값을 입력해주세요(없으면 -1) :  ";
 
-	int tempUniqueKey{};
 	std::cin >> tempUniqueKey;
+#endif
 
-	networkManager = std::make_unique<NetworkManager>(tempUniqueKey);
+	//networkManager = std::make_unique<NetworkManager>(tempUniqueKey);
+	networkManager = new NetworkManager(tempUniqueKey);
+
+#ifdef WONSY_TIMER_MANAGER
+	TimerManager::MakeInstance(*networkManager);
+#endif
 
 #ifdef WONSY_LOG_MANAGER
 #ifdef DEFAULT_TEST_MODE
@@ -47,13 +58,24 @@ void DummyClientFramework::Draw(HDC hdc)
 	int tempCount{ 0 };
 	int zeroPosCount{ 0 };
 
-	NetworkManager::_ClientArrType tempClientArr;
-	{
-		std::shared_lock<std::shared_mutex> tempSharedLock(networkManager->clientArrLock);
-		tempClientArr = networkManager->clientArr;
-	}
+	//NetworkManager::_ClientArrType tempClientArr;
+	//{
+	//	std::shared_lock<std::shared_mutex> tempSharedLock(networkManager->clientArrLock);
+	//	tempClientArr = networkManager->clientArr;
+	//}
+	//
+	//for (auto& pClient : tempClientArr)
+	//{
+	//	if (pClient->isLogin)
+	//	{
+	//		const _PosType tempX = static_cast<_PosType>((pClient->posX - GAME::ZONE_MIN_X) * ((static_cast<float>(WINDOW::WINDOW_WIDTH) / GAME::ZONE_X_SIZE)));
+	//		const _PosType tempY = static_cast<_PosType>(((pClient->posY - GAME::ZONE_MIN_Y) * (static_cast<float>(WINDOW::WINDOW_HEIGHT) / GAME::ZONE_Y_SIZE)));
+	//		
+	//		Rectangle(hdc, tempX - GAME::ACTOR_X_SIZE, tempY - GAME::ACTOR_Y_SIZE, tempX + GAME::ACTOR_X_SIZE, tempY + GAME::ACTOR_Y_SIZE);
+	//	}
+	//}
 
-	for (auto& pClient : tempClientArr)
+	for (const auto& pClient : networkManager->clientArr)
 	{
 		if (pClient->isLogin)
 		{
@@ -64,6 +86,7 @@ void DummyClientFramework::Draw(HDC hdc)
 		}
 	}
 	
+#if USE_CONTROLLED_CLIENT == __ON
 	if (networkManager->GetIsFindControlledClient())
 	{
 		HBRUSH	redBrush, oldBrush;
@@ -76,11 +99,12 @@ void DummyClientFramework::Draw(HDC hdc)
 		posX = static_cast<_PosType>((posX - GAME::ZONE_MIN_X) * ((static_cast<float>(WINDOW::WINDOW_WIDTH) / GAME::ZONE_X_SIZE)));
 		posY = static_cast<_PosType>((posY - GAME::ZONE_MIN_Y) * ((static_cast<float>(WINDOW::WINDOW_HEIGHT) / GAME::ZONE_Y_SIZE)));
 
-		Rectangle(hdc, posX - GAME::ACTOR_X_SIZE * 2, posY - GAME::ACTOR_Y_SIZE * 2, posX + GAME::ACTOR_X_SIZE * 2, posY + GAME::ACTOR_Y_SIZE * 2);
+		Rectangle(hdc, posX - GAME::ACTOR_X_SIZE * 1.5, posY - GAME::ACTOR_Y_SIZE * 1.5, posX + GAME::ACTOR_X_SIZE * 1.5, posY + GAME::ACTOR_Y_SIZE * 1.5);
 		
 		SelectObject ( hdc, oldBrush);
 		DeleteObject (redBrush);
 	}
+#endif
 	
 	auto tempStr = (L"Dummy Count : " + std::to_wstring(networkManager->GetConnectedClientCount()));
 	

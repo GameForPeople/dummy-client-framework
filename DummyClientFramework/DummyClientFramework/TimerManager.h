@@ -24,6 +24,7 @@ namespace WonSY
 		_ClientIndexType ownerKey;	// 해당 타이머를 제작한 키.
 		_ClientIndexType targetKey; // 해당 타이머의 목적이 되는 키.
 		// std::any timerData;	// timerType에 따른 Data를 가짐.
+		_TimeDataType timerData;
 
 	public:
 		TimerUnit() noexcept;
@@ -41,31 +42,31 @@ namespace WonSY
 	class TimerManager /*: 싱글턴 */
 	{
 	public:
-		_NODISCARD static inline TimerManager* GetInstance() noexcept { return TimerManager::instance; };
+		_DO_NOT_DELETE _NODISCARD static inline TimerManager* GetInstance() noexcept { return TimerManager::instance; };
 
-		/*_NODISCARD*/ static void MakeInstance(HANDLE hIOCP) { TimerManager::instance = new TimerManager(hIOCP); };
+		static void MakeInstance(NetworkManager& networkManager) { TimerManager::instance = new TimerManager(networkManager); };
 
 		static void DeleteInstance() { delete instance; }
 
 	public:
 		void TimerThread();
-		static DWORD WINAPI StartTimerThread();
-		void AddTimerEvent(const TIMER_TYPE, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime);
+		void AddTimerEvent(const TIMER_TYPE, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime, const _TimeDataType data);
 
 	private:
 		void ProcessTimerEvent_CUSTOM(TimerUnit*);
 
-		_NODISCARD TimerUnit* PopTimerUnit();
+		_DO_NOT_DELETE _NODISCARD TimerUnit* PopTimerUnit();
 		void PushTimerUnit(TimerUnit*);
 
 	private:
-		HANDLE hIOCP;
+		NetworkManager& networkManagerInstance;
 		static inline TimerManager* instance = nullptr;
 
-		TimerManager(HANDLE hIOCP);
+		TimerManager(NetworkManager& networkManagerInstance);
 		~TimerManager();
 
-		_TimeType nowTime;	// 
+		std::thread timerThread;
+		_TimeType nowTime;
 
 		//std::vector<concurrency::concurrent_queue<TimerUnit*>> timerCont;
 		concurrency::concurrent_priority_queue<TimerUnit*, TimerUnitCompareFunction> timerCont;

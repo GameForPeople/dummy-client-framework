@@ -18,5 +18,6 @@ private:
 
 private:
 	HWND hWnd;
-	std::unique_ptr<NetworkManager> networkManager;
+	//std::unique_ptr<NetworkManager> networkManager;
+	NetworkManager* networkManager;
 };

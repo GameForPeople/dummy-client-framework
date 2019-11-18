@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "NetworkManager.h"
 #include "TimerManager.h"
 
 #ifdef WONSY_TIMER_MANAGER
@@ -7,8 +8,11 @@
 // TimerUnit
 //---------------------------------------------------------------------------
 TimerUnit::TimerUnit() noexcept
-	: timerType(TIMER_TYPE::NONE_TYPE), eventTime(),
-	ownerKey(), targetKey()
+	: timerType(TIMER_TYPE::NONE_TYPE)
+	, eventTime()
+	, ownerKey()
+	, targetKey()
+	, timerData()
 {
 }
 
@@ -20,14 +24,17 @@ TimerUnit::~TimerUnit()
 // TimerManager
 //---------------------------------------------------------------------------
 
-TimerManager::TimerManager(HANDLE hIOCP) :
-	hIOCP(hIOCP),
+TimerManager::TimerManager(NetworkManager& networkManagerInstance) :
+	networkManagerInstance(networkManagerInstance),
 	nowTime(GetTickCount64()),
 	timerCont(),
-	timerMemoryPool()
+	timerMemoryPool(),
+	timerThread()
 {
 	for (int i = 0; i < FRAMEWORK::PRE_ALLOCATION_TIMER_UNIT_COUNT; ++i) { timerMemoryPool.push(new TimerUnit()); }
 	//std::wcout << L"!. TimerManager의 초기 할당 사이즈는 " << timerMemoryPool.unsafe_size() << L" 입니다." << std::endl;
+
+	timerThread = std::thread([this]() {this->TimerThread(); });
 }
 
 TimerManager::~TimerManager()
@@ -35,47 +42,52 @@ TimerManager::~TimerManager()
 	TimerUnit* retTimerUnit = nullptr;
 	while (timerMemoryPool.try_pop(retTimerUnit)) { delete retTimerUnit; }
 	while (timerCont.try_pop(retTimerUnit)) { delete retTimerUnit; }
-}
 
-DWORD WINAPI TimerManager::StartTimerThread()
-{
-	TimerManager::GetInstance()->TimerThread();
-	return 0;
-};
+	timerThread.join();
+}
 
 void TimerManager::TimerThread()
 {
 	using namespace std::literals;
-	//std::this_thread::sleep_for(1ms); 
-	const _TimeType tempNowTime = GetTickCount64();
-
-	while (timerCont.size())
+	
+	while (7)
 	{
-		TimerUnit* retTimerUnit{ nullptr };
-		while (!timerCont.try_pop(retTimerUnit))
-		{
-		}
+		std::this_thread::yield();
+		const _TimeType tempNowTime = GetTickCount64();
 
-		if (tempNowTime < retTimerUnit->eventTime)
+		while (timerCont.size())
 		{
-			//PushTimerUnit(retTimerUnit);
-			timerCont.push(retTimerUnit);
-			break;
+			TimerUnit* retTimerUnit{ nullptr };
+			
+			while (!timerCont.try_pop(retTimerUnit))
+			{
+				break;
+			}
+
+			if (tempNowTime < retTimerUnit->eventTime)
+			{
+				timerCont.push(retTimerUnit);
+				break;
+			}
+
+			ProcessTimerEvent_CUSTOM(retTimerUnit);
+			PushTimerUnit(retTimerUnit);
 		}
-		
-		ProcessTimerEvent_CUSTOM(retTimerUnit);
-		PushTimerUnit(retTimerUnit);
 	}
 }
 
-void TimerManager::AddTimerEvent(const TIMER_TYPE inTimerType, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime)
+void TimerManager::AddTimerEvent(const TIMER_TYPE inTimerType, const _ClientIndexType ownerKey, const _ClientIndexType targetKey, const TIME waitTime, const _TimeDataType data)
 {
 	TimerUnit* timerUnit = PopTimerUnit();
 
 	timerUnit->timerType = inTimerType;
+	timerUnit->timerData = data;
+
 	timerUnit->ownerKey = ownerKey;
 	timerUnit->targetKey = targetKey;
+
 	timerUnit->eventTime = GetTickCount64() + static_cast<_TimeType>(waitTime);
+
 	timerCont.push(timerUnit);
 }
 

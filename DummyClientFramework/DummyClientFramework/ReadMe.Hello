@@ -1,9 +1,24 @@
 해당 프로젝트는 MMORPG 게임 서버의 간단한 Dummy Client ( Test Server, Stress Client ) 입니다.
 
-Custom.hh, Custom.cpp 만 테스트 하시려는 서버에 맞게 수정하시면, 사용하실 수 있는 테스트 클라이언트입니다.
+Custom.hh, Custom.cpp 만 서버에 맞게 수정하시면, 사용하실 수 있는 테스트 클라이언트입니다.
 
-신입 서버 프로그래머의 포토폴리오이므로, 해당 프로그램이 불안정 할 수 있습니다.
+공부 목적으로 시작한 프로젝트로, 해당 프로그램이 비정상적으로 동작할 수 있습니다.
 
-깃헙 저장소에서 자세한 사항을 확인할 수 있습니다. ( 링크 : https://github.com/GameForPeople/dummy-client-framework )
+깃헙 저장소에서 관련 내용을 확인할 수 있습니다. ( 링크 : https://github.com/GameForPeople/dummy-client-framework )
 
 감사합니다.
+
+[참고]
+#0. IOCP로 제작한 더미 클라이언트입니다. 클라이언트는 WinAPI를 사용하고 있습니다. (윈도우 종속입니다.)
+
+#1. 접속 중인 다른 클라이언트의 키를 입력하여, 추적할 수 있습니다.
+	- USE_CONTROLLED_CLIENT 옵션을 활성화 해주세요.
+
+#2. Server와 동일하게 Timer Event를 등록할 수 있습니다.
+	- USE_TIMER_MANAGER 옵션을 활성화 해주세요.
+
+[경고]
+!0. 해당 프로그램은 동기화를 정확하게 하고 있지 않습니다. 서버 성능 테스트 용도에 불필요하다고 판단했습니다.
+!1. Packet의 사이즈를 서버와 동일하게 맞춰줘야 합니다. 동일한 패킷을 사용하시거나, Padding Byte로 일치시켜줘야합니다.
+!2. USE_CONTROLLED_CLIENT옵션을 사용하더라도, Controlled Client 주변에 dummyClient가 없을 경우, BroadCast되지 않아 위치가 출력되지 않을 수 있습니다.
+!3. TimerThread는 PQCS를 사용하지 않고, Single-Thread로 동작합니다. 높은 비용을 많이 요청할 경우, 병목이 발생할 수 있습니다.
