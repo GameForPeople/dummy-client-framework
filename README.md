@@ -15,7 +15,7 @@ GameServer Dummy Client Framework For TCP/IP Socket Server
 ### Pre-Ver 0.1 (2019-09-10)
   - 단순 Dummy Client 기능 구현
 
-### Release 1.1 (2019-11-19)
+### [Release 1.1 (2019-11-19)](https://github.com/GameForPeople/dummy-client-framework/tree/Release_1_1)
   - Controlled Client Broadcast 구현 ( + Broadcast Region Draw)
   - Timer Event Manger 구현
   - Icon, UI, ReadMe.Hello 등 변경 
